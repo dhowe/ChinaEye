@@ -1,20 +1,10 @@
 console.log('Loaded content.js for: ' + location.href);
 
-chrome.runtime.onMessage.addListener(
-  function (message, sender, callback) {
-    
-    if (message.what === "isActive") {
-      //console.log("cs-send", 'active:'+(document.querySelector('#rd_style')!=null));
-      callback({
-        'active': (document.querySelector('#rd_style') != null)
-      });
-    }
-  });
-
 if (document.querySelector('#rd_style') === null) {
 
   chrome.runtime.sendMessage({
-    what: "checkPage"
+    what: "checkPage",
+    location: location
   }, function (res) {
 
     if (res.status === 'block') {
@@ -51,3 +41,14 @@ if (document.querySelector('#rd_style') === null) {
     }
   });
 }
+
+chrome.runtime.onMessage.addListener(
+  function (message, sender, callback) {
+
+    if (message.what === "isActive") {
+      //console.log("cs-send", 'active:'+(document.querySelector('#rd_style')!=null));
+      callback({
+        'active': (document.querySelector('#rd_style') != null)
+      });
+    }
+  });

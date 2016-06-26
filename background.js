@@ -1,11 +1,35 @@
 var disabled = {},
-  gfw = 'http://www.greatfirewallofchina.org';
+  gfw = 'http://www.greatfirewallofchina.org',
+  googleRegex = /^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$/i,
+  triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse'];
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  //console.log("onMessage:", request.what, request, sender);
+  console.log("onMessage:", request.what, request);
 
   if (request.what === "checkPage") { // from content_script
+
+    var host = request.location.host,
+      hash = request.location.hash;
+
+    if (googleRegex.test(host) && hash.indexOf("#q=")===0) {
+
+      var query = hash.substring(3).toLowerCase();
+
+      console.log('google-search: ' + query);
+
+      for (var i = 0; i < triggers.length; i++) {
+
+        if (query === triggers[i].toLowerCase()) {
+
+          console.log('google-block: ' + query);
+          callback({
+            status: 'block',
+            trigger: query
+          });
+        }
+      }
+    }
 
     checkPage(sender.tab, callback);
 
