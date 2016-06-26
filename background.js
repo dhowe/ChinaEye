@@ -53,8 +53,12 @@ var checkPage = function (tab, callback) {
 var parseResults = function (html) {
 
   var fails = 0,
-    result = {},
-    locs = $(html).find('.resultlocation'),
+    result = {};
+
+  // remove img tags before calling find
+  html = html.replace(/<img\b[^>]*>/ig, '');
+
+  var locs = $(html).find('.resultlocation'),
     vals = $(html).find('.resultstatus');
 
   for (var i = 0; i < locs.length; i++) {
