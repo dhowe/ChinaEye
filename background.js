@@ -1,64 +1,69 @@
-var disabled = {};
+var disabled = {},
+  gfw = 'http://www.greatfirewallofchina.org';
 
-chrome.runtime.onMessage.addListener(function (req, src, callback) {
+chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  console.log("msg:", req.what, req, src);
+  //console.log("onMessage:", request.what, request, sender);
 
-  if (req.what === "refresh" && req.tabId) { // from popup
+  if (request.what === "checkPage") { // from content_script
+
+    checkPage(sender.tab, callback);
+
+  } else if (request.what === "disablePage") { // from popup
 
     // add to disabled-tabId table
-    disabled[req.tabId] = true;
+    disabled[request.tabId] = true;
 
-    setTimeout(function () {
-      delete disabled[req.tabId];
-    }, 5000); // remove after 5 seconds
-
-    chrome.tabs.reload(req.tabId);
-
-  } else if (req.what === "test") { // from content_script
-
-    var active = (typeof disabled[src.tab.id] === 'undefined');
-    if (active) {
-      testServers(src.tab.url, callback);
-    }
-    //var tabId = (src.tab && src.tab.id) || req.tabId;
-  } else if (req.what === "check") { // from content_script
-
-    //var tabId = (src.tab && src.tab.id) || req.tabId;
-    callback({
-      "active": (typeof disabled[src.tab.id] === 'undefined')
-    });
+    // and reload (will trigger content-script and be ignored)
+    chrome.tabs.reload(request.tabId);
   }
+
   return true;
 });
 
-var testServers = function (page, callback) {
+var checkPage = function (tab, callback) {
 
-  var gfw = 'http://www.greatfirewallofchina.org';
-  var url = gfw + '/index.php?siteurl=' + page;
+  //console.log('checkPage:', tab.url);
 
-  console.log('testServers:', url);
+  if (typeof disabled[tab.id] === 'undefined') {
 
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function () {
-
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-
-      var fails = 0, result = {},
-        locs = $(xhr.responseText).find('.resultlocation'),
-        vals = $(xhr.responseText).find('.resultstatus');
-
-      for (var i = 0; i < locs.length; i++) {
-        var value = $(vals[i]).text().toLowerCase();
-        result[$(locs[i]).text().toLowerCase()] = value;
-        if (value === 'fail') fails++;
+    $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
+      success: function (data) {
+        callback(parseResults(data));
+      },
+      error: function (e) {
+        callback({
+          status: 'error',
+          fails: -1
+        });
+        console.warn(e);
       }
+    });
+  } else { // we're disabled
 
-      console.log('result:', locs.length, vals.length, result);
-      result.status = fails > 2 ? 'block' : 'allow';
-      callback(result);
-    }
+    setTimeout(function () {
+      delete disabled[tab.id];
+    }, 5000); // remove after 5 seconds
+    callback({
+      status: 'disabled'
+    });
   }
-  xhr.open('GET', url, true);
-  xhr.send(null);
+}
+
+var parseResults = function (html) {
+
+  var fails = 0,
+    result = {},
+    locs = $(html).find('.resultlocation'),
+    vals = $(html).find('.resultstatus');
+
+  for (var i = 0; i < locs.length; i++) {
+    var value = $(vals[i]).text().toLowerCase();
+    result[$(locs[i]).text().toLowerCase()] = value;
+    if (value === 'fail') fails++;
+  }
+
+  result.status = fails > 2 ? 'block' : 'allow';
+  //console.log('result:', locs.length, vals.length, result);
+  return result;
 }

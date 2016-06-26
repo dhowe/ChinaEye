@@ -14,8 +14,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ask content-script if we are active
     chrome.tabs.sendMessage(tabs[0].id, {
-      what: "isActive"
+      what: 'isActive',
     }, function (res) {
+
+      //console.log('isActive?',res);
+
       updateButton(button, tabs[0].id, !res || res.active);
     });
   });
@@ -24,13 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
 // enable the button if we are active
 function updateButton(button, tabId, on) {
 
+  //console.log('updateButton', on);
+
   button.disabled = !on;
   button.innerHTML = (on ? 'Disable on this page' : 'Disabled');
 
   on && button.addEventListener('click', function () {
 
     chrome.runtime.sendMessage({
-      what: "refresh",
+      what: "disablePage",
       tabId: tabId
     });
 
