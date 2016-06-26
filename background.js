@@ -9,10 +9,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   if (request.what === "checkPage") { // from content_script
 
+    if (typeof disabled[sender.tab.id] !== 'undefined') {
+
+      setTimeout(function () {
+        delete disabled[sender.tab.id];
+      }, 5000); // remove after 5 seconds
+
+      callback({
+        status: 'disabled'
+      });
+    }
+
+    // do we have a search, check the query term
     var host = request.location.host,
       hash = request.location.hash;
 
-    if (googleRegex.test(host) && hash.indexOf("#q=")===0) {
+    if (googleRegex.test(host) && hash.indexOf("#q=") === 0) {
 
       var query = hash.substring(3).toLowerCase();
 
@@ -27,10 +39,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             status: 'block',
             trigger: query
           });
+          return true;
         }
       }
     }
 
+    // otherwise check with china servers
     checkPage(sender.tab, callback);
 
   } else if (request.what === "disablePage") { // from popup
@@ -47,31 +61,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
 var checkPage = function (tab, callback) {
 
-  //console.log('checkPage:', tab.url);
+  console.log('checkPage:', tab.url);
 
-  if (typeof disabled[tab.id] === 'undefined') {
-
-    $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
-      success: function (data) {
-        callback(parseResults(data));
-      },
-      error: function (e) {
-        callback({
-          status: 'error',
-          fails: -1
-        });
-        console.warn(e);
-      }
-    });
-  } else { // we're disabled
-
-    setTimeout(function () {
-      delete disabled[tab.id];
-    }, 5000); // remove after 5 seconds
-    callback({
-      status: 'disabled'
-    });
-  }
+  $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
+    success: function (data) {
+      callback(parseResults(data));
+    },
+    error: function (e) {
+      callback({
+        status: 'error',
+        fails: -1
+      });
+      console.warn(e);
+    }
+  });
 }
 
 var parseResults = function (html) {

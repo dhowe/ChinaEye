@@ -7,6 +7,8 @@ if (document.querySelector('#rd_style') === null) {
     location: location
   }, function (res) {
 
+    console.log('result: ',res);
+    
     if (res.status === 'block') {
 
       // Create text for the CSS we need for our font
