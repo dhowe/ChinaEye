@@ -11,7 +11,7 @@
   },
 
   "background": {
-    "scripts": [ "background.js" ]
+    "scripts": [ "jquery-2.2.3.js", "background.js" ]
   },
 
   "browser_action": {

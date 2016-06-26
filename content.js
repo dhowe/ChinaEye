@@ -1,19 +1,10 @@
-chrome.runtime.onMessage.addListener(
-  function (message, sender, callback) {
-    if (message.what === "isActive")
-      //console.log("cs-send", 'active:'+(document.querySelector('#rd_style')!=null));
-      callback({
-        'active': (document.querySelector('#rd_style') != null)
-      });
-  });
+//console.log('content.js1: ' + location.href);
 
 chrome.runtime.sendMessage({
-  what: "check"
+  what: "test"
 }, function (res) {
 
-  //console.log('Redacto: ' + (res.active ? 'active' : 'inactive'));
-
-  if (res.active) {
+  if (res.status === 'block') {
 
     // Create text for the CSS we need for our font
     var redact, fontFace = '@font-face { font-family: Redacted; src: url("' +
