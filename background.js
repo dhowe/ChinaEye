@@ -1,8 +1,10 @@
 var disabled = {},
-  gfw = 'http://www.greatfirewallofchina.org',
-  googleRegex = /^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$/i,
-  triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse'];
-
+    gfw = 'http://www.greatfirewallofchina.org',
+    qRegex = /q=([^&#]*)|p=([^&#]*)/g,
+    regexes = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$','^(www\.)*bing\.(com)$','^(([a-z]{2})\.search)|search\.yahoo\.com$']
+    hostRegex = new RegExp(regexes.join("|"), "i");
+    triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse'];
+   
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   console.log("onMessage:", request.what, request);
@@ -21,20 +23,25 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     }
 
     // do we have a search, check the query term
-    var host = request.location.host,
-      hash = request.location.hash;
+    var queryString = request.location.search;
+        host = request.location.host;
+        keyword = request.location.hash.substring(3) || queryString.match(qRegex)[0].substring(2);
 
-    if (googleRegex.test(host) && hash.indexOf("#q=") === 0) {
+        
 
-      var query = hash.substring(3).toLowerCase();
+    console.log("query",queryString,"host",host,"keyword",keyword);
+    console.log("search engine?",hostRegex.test(host));  
 
-      console.log('google-search: ' + query);
+    if (hostRegex.test(host) && keyword !== null) {
+
+      var query = keyword.toLowerCase();
+      console.log('search: ' + query);
 
       for (var i = 0; i < triggers.length; i++) {
 
         if (query === triggers[i].toLowerCase()) {
 
-          console.log('google-block: ' + query);
+          console.log('block: ' + query);
           callback({
             status: 'block',
             trigger: query
@@ -42,6 +49,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
           return true;
         }
       }
+
     }
 
     // otherwise check with china servers
