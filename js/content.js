@@ -37,7 +37,7 @@ if (document.querySelector('#rd_style') === null) {
 
       // rerun our function when new nodes are inserted
       document.addEventListener('DOMNodeInserted', function (e) {
-        console.log('DOMNodeInserted');
+        // console.log('DOMNodeInserted');
         redact(e.relatedNode);
       });
     }

@@ -11,7 +11,7 @@
   },
 
   "background": {
-    "scripts": [ "jquery-2.2.3.js", "background.js" ]
+    "scripts": [ "js/jquery-2.2.3.js", "js/background.js" ]
   },
 
   "browser_action": {
@@ -21,7 +21,7 @@
 
   "content_scripts": [{
     "matches": [ "<all_urls>" ],
-    "js": [ "jquery-2.2.3.js", "content.js" ],
+    "js": [ "js/jquery-2.2.3.js", "js/content.js" ],
     "run_at": "document_end"
   }],
 
@@ -30,6 +30,10 @@
   ],
 
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "webRequest",
+    "storage",
+    "http://*/*",
+    "https://*/*"
   ]
 }
