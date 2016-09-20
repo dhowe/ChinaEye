@@ -1,3 +1,8 @@
+[China Eye]
+! Version: 20160920
+! The contents of this list are generated from the chinese-keywords repository: https://github.com/jasonqng/chinese-keywords/blob/master/csv/no-dummy-vars-for-categories-and-themes_only-sensitive-words.csv
+
+!-----------------------Sensitive Keywords-----------------------!
 "薄熙来倒了，下一个是周永康"|Bo Xilai down, the next one is Zhou Yongkang
 "周永康兵变和警变"|Zhou Yongkang military coup
 銀行卡復制器"|Bank card replicating machine
