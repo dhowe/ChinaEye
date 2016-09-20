@@ -3,23 +3,26 @@ var firstRun = true;
 
 var disabled = {},
     gfw = 'http://www.greatfirewallofchina.org',
-
     qRegex = /q=([^&#]*)|p=([^&#]*)/g,
-    regexes = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$','^(www\.)*bing\.(com)$','^(([a-z]{2})\.search)|search\.yahoo\.com$']
-    hostRegex = new RegExp(regexes.join("|"), "i");
-
+    regexes = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$','^(www\.)*bing\.(com)$','^(([a-z]{2})\.search)|search\.yahoo\.com$'],
+    hostRegex = new RegExp(regexes.join("|"), "i"),
     triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse','草泥'];
 
+chrome.runtime.onInstalled.addListener(function(event) {
+    init(event);
+});
+
 chrome.runtime.onStartup.addListener(function(event) {
+
     if(firstRun){
       init(event);
       firstRun = false;
     }
-    else updateList();
-});
+    else {
+      loadList();
+      // updateList();
+    };
 
-chrome.runtime.onInstalled.addListener(function(event) {
-    init(event);
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
@@ -49,7 +52,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     if (hostRegex.test(host) && keyword !== null) {
 
-      var query = keyword.toLowerCase();
+      var query = decodeURI(keyword.toLowerCase());
       showLogs && console.log('search: ' + query);
 
       for (var i = 0; i < triggers.length; i++) {
@@ -82,6 +85,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   return true;
 });
 
+/**************************** functions ******************************/
 
 var checkPage = function (tab, callback) {
 
@@ -130,18 +134,13 @@ var processTriggers = function(rules) {
       triggers.push(keywords[0]);
       if(keywords.length>1) triggers.push(keywords[1]);
     }
-    // showLogs && console.log('Triggers ready.',triggers);
+    showLogs && console.log('Triggers ready.');
 }
-
-var init = function(event) {
-  loadList();
-}
-
 
 var loadList = function(callback) {
 
     $.ajax({
-       url : 'http://chenqianxun.com/resource/list.txt',
+       url : 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
        type : 'get',
        success: function (data) {
          showLogs && console.log("Successfully get the list");
@@ -158,16 +157,31 @@ var loadList = function(callback) {
 
 }
 
-var updateList = function() {
-   
-}
-
 function processList(list) {
 
-  var rules = list.split("\n");
-  console.log("Example",rules[1]);
-  chrome.storage.local.set({ 'blockingKeywords': rules });
-  processTriggers(rules);
+  var txtArr = list.split("\n");
 
+  var versionInfo = txtArr.filter(function (line) {
+    return /^! Version:(.*)/.test(line)});
+  if(versionInfo && versionInfo.length > 0) 
+    var version = versionInfo[0].match(/^! Version:(.*)/)[1];
+  showLogs && console.log("version",version);
+
+  var rules = txtArr.filter(function (line) {
+    return /^(?!!|\[).*/.test(line)
+  });
+
+  showLogs && console.log("Example",rules[1]);
+
+  chrome.storage.local.set({ 'list': {
+    version : version,
+    rules : rules
+  } });
+  
+  processTriggers(rules);
+}
+
+var init = function(event) {
+  loadList();
 }
 
