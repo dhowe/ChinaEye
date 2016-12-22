@@ -8,7 +8,7 @@ var disabled = {},
 chrome.runtime.onStartup.addListener(updateCheck);
 
 chrome.runtime.onInstalled.addListener(function () {
-  loadList();
+  loadList(processList);
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -138,7 +138,7 @@ var loadList = function (callback) {
     type: 'get',
     success: function (data) {
       showLogs && console.log("Got list: " + data.length);
-      callback && callback(processList(data));
+      callback(data);
     },
     error: function (e) {
       callback && callback({
@@ -172,7 +172,7 @@ var updateCheck = function () {
 
     } else {
 
-      loadList();
+      loadList(processList);
     }
   });
 }
