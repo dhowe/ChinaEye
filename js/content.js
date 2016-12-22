@@ -9,7 +9,7 @@ if (document.querySelector('#rd_style') === null) {
 
     console.log('result: ',res);
     
-    if (res.status === 'block') {
+    if (res && res.status === 'block') {
 
       // Create text for the CSS we need for our font
       var redact, fontFace = '@font-face { font-family: Redacted; src: url("' +
