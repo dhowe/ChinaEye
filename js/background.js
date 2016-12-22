@@ -1,4 +1,4 @@
-var showLogs = false;
+var showLogs = true;
 
 var disabled = {},
     gfw = 'http://www.greatfirewallofchina.org',
@@ -41,10 +41,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 
         if(keyword == ""){
              hashinfo = request.location.hash;
-             keyword = qRegex.exec(hashinfo);
+             matches = qRegex.exec(hashinfo);
+             if(matches && matches.length > 0) keyword = matches[1];
         }
 
-        showLogs && console.log(matches,keyword,request.location.search, request.location.hash);
+        showLogs && console.log("matches:" + matches);
 
         showLogs && console.log("host", host, "keyword", keyword);
         showLogs && console.log("search engine?", hostRegex.test(host));
