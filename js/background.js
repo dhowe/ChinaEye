@@ -34,17 +34,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         }
 
         // do we have a search, check the query term
-        var host = request.location.host,
-            keyword = request.location.hash.substring(3);
-        if(!keyword) {
+        var host = request.location.host, keyword = "",
             matches = qRegex.exec(request.location.search);
-            if(matches && matches.length > 0) keyword = matches[0].substring(2);
+
+        if(matches && matches.length > 0) keyword = matches[0].substring(2);
+
+        if(keyword == ""){
+             hashinfo = request.location.hash;
+             keyword = qRegex.exec(hashinfo);
         }
+
+        showLogs && console.log(matches,keyword,request.location.search, request.location.hash);
 
         showLogs && console.log("host", host, "keyword", keyword);
         showLogs && console.log("search engine?", hostRegex.test(host));
 
-        if (hostRegex.test(host) && keyword !== null) {
+        if (hostRegex.test(host) && keyword !== null && keyword != "") {
 
             var query = decodeURI(keyword.toLowerCase());
             showLogs && console.log('search: ' + query);
