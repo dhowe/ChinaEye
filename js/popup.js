@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.sendMessage(tabs[0].id, {
       what: 'isActive',
     }, function (res) {
+      console.log(res);
 
       //console.log('isActive?',res);
 
@@ -24,21 +25,46 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// enable the button if we are active
+
 function updateButton(button, tabId, on) {
 
-  //console.log('updateButton', on);
+  console.log('updateButton', on);
 
-  button.disabled = !on;
-  button.innerHTML = (on ? 'Disable on this page' : 'Disabled');
+  //if we are active - button:disable on this page
+  //if we are not active, check whether the page is in the disabled list
+  //if yes, - button: Resume on this Page
 
-  on && button.addEventListener('click', function () {
+  if (on) {
+      button.disabled = false;
+      button.innerHTML = 'Disable on this page';
+  } else {
+      chrome.runtime.sendMessage({
+          what: "isOnDisabledList",
+          tabId: tabId
+      }, function(res) {
+
+          if (res.status == 'disabled') {
+              button.disabled = false;
+              button.innerHTML = 'Resume on this Page';
+          } else
+              button.disabled = !on;
+      });
+
+  }
+  
+
+  button.addEventListener('click', function () {
+
+    var message = (on ? "disablePage" : "resumePage");
 
     chrome.runtime.sendMessage({
-      what: "disablePage",
+      what: message,
       tabId: tabId
     });
 
     window.close();
+
+
   });
+
 }
