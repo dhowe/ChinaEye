@@ -66,14 +66,30 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   } else if (request.what === "disablePage") { // from popup
 
-    console.log("disable page! ");
-
     // add to disabled-tabId table
     disabled[request.tabId] = true;
-
     // and reload (will trigger content-script and be ignored)
     chrome.tabs.reload(request.tabId);
+
+  } else if(request.what === "resumePage") {
+
+    // remove from disabled-tabId table
+    delete disabled[request.tabId];
+    //reload the page
+    chrome.tabs.reload(request.tabId);
+    
+  } else if( request.what === "isOnDisabledList" ){
+
+      if (typeof disabled[request.tabId] !== 'undefined') {
+
+      callback && callback({
+        status: 'disabled'
+      });
+
+    }
+
   }
+
 });
 
 /**************************** functions ******************************/
