@@ -1,4 +1,4 @@
-var showLogs = false;
+var showLogs = true;
 
 var disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
@@ -8,7 +8,7 @@ var disabled = {},
 chrome.runtime.onStartup.addListener(updateCheck);
 
 chrome.runtime.onInstalled.addListener(function () {
-  loadList(processList);
+  getTriggersFromLocalStorage();
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -35,10 +35,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         status: 'disabled'
       });
     }
+    
+    //ignore chrome pages
+    if(request.location.href.indexOf("chrome://") === 0) return;
 
     var hostRegex = new RegExp(engines.join('|'), 'i'),
-      keyvals = keysValues(request.location.href);
-    keyword = keyvals.q || keyvals.p;
+        keyvals = keysValues(request.location.href);
+        keyword = keyvals.q || keyvals.p;
+
+    console.log(keyvals.q, keyvals.p, keyword, hostRegex.test(request.location.host));
 
     if (keyword && keyword.length && hostRegex.test(request.location.host)) {
 
@@ -95,15 +100,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 /**************************** functions ******************************/
 
 function keysValues(href) {
-
+  
   var vars = [],
-    hashes = href.slice(href.indexOf('?') + 1).split('&');
+    hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+  console.log(hashes);
   for (var i = 0; i < hashes.length; i++) {
     var hash = hashes[i].split('=');
+
     vars.push(hash[0]);
     vars[hash[0]] = hash[1];
   }
-
+ console.log(vars);
   return vars;
 }
 
@@ -143,17 +150,35 @@ var parseResults = function (html) {
   }
 
   result.status = fails > 2 ? 'block' : 'allow';
-  //console.log('result:', locs.length, vals.length, result);
+  showLogs && console.log('result:', locs.length, vals.length, result);
   return result;
 }
 
-var loadList = function (callback) {
+var downloadList = function (callback) {
 
   $.ajax({
     url: 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
     type: 'get',
     success: function (data) {
       showLogs && console.log("Got list: " + data.length);
+      callback(data);
+    },
+    error: function (e) {
+      callback && callback({
+        status: 'error',
+        fails: -1
+      });
+      console.warn(e);
+    }
+  });
+}
+
+var loadListFromLocal = function (callback) {
+  $.ajax({
+    url: chrome.runtime.getURL("sensitiveKeywords.txt"),
+    type: 'get',
+    success: function (data) {
+      showLogs && console.log("Load list from Local: " + data.length);
       callback(data);
     },
     error: function (e) {
@@ -180,21 +205,29 @@ var updateCheck = function () {
     if (currentTime - lastCheckTime < twelveHours) {
 
       showLogs && console.log("No need to update");
-      chrome.storage.local.get('list', function (data) {
-        processTriggers(data.list);
-      });
 
       return;
 
     } else {
 
-      loadList(processList);
+      downloadloadList(processList);
     }
   });
 }
 
-var processTriggers = function (rules) {
+var getTriggersFromLocalStorage = function (rules){
+    //if it returns null, loadFrom local copy
+    chrome.storage.local.get('list', function (data) {
+        if(data.list === undefined) loadListFromLocal(processList);
+        else {
+          showLogs && console.log("Get triggers from local storage.");
+          processTriggers(data.list);
+        }
+      });
 
+}
+
+var processTriggers = function (rules) {
   for (var index in rules) {
 
     var rule = rules[index];
