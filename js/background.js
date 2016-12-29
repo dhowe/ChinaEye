@@ -1,4 +1,4 @@
-var showLogs = true;
+var showLogs = false;
 
 var disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
@@ -42,8 +42,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     var hostRegex = new RegExp(engines.join('|'), 'i'),
         keyvals = keysValues(request.location.href);
         keyword = keyvals.q || keyvals.p;
-
-    console.log(keyvals.q, keyvals.p, keyword, hostRegex.test(request.location.host));
 
     if (keyword && keyword.length && hostRegex.test(request.location.host)) {
 
@@ -103,14 +101,14 @@ function keysValues(href) {
   
   var vars = [],
     hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
-  console.log(hashes);
+
   for (var i = 0; i < hashes.length; i++) {
     var hash = hashes[i].split('=');
 
     vars.push(hash[0]);
     vars[hash[0]] = hash[1];
   }
- console.log(vars);
+
   return vars;
 }
 
