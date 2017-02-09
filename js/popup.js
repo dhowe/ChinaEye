@@ -35,7 +35,7 @@ function updateButton(button, tabId, on) {
 
   if (on) {
       button.disabled = false;
-      button.innerHTML = 'Disable on this page';
+      button.innerHTML = 'Disable ChinaEye on this page';
   } else {
       chrome.runtime.sendMessage({
           what: "isOnDisabledList",
@@ -44,7 +44,7 @@ function updateButton(button, tabId, on) {
 
           if (res && res.status == 'disabled') {
               button.disabled = false;
-              button.innerHTML = 'Resume on this Page';
+              button.innerHTML = 'Resume ChinaEye on this Page';
           } 
           else
               button.disabled = !on;
