@@ -27,9 +27,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     if (typeof disabled[sender.tab.id] !== 'undefined') {
 
-      setTimeout(function () {
-        delete disabled[sender.tab.id];
-      }, 5000); // remove after 5 seconds
+      // setTimeout(function () {
+      //   delete disabled[sender.tab.id];
+      // }, 5000); // remove after 5 seconds //why?
 
       callback && callback({
         status: 'disabled'
@@ -75,14 +75,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     chrome.tabs.reload(request.tabId);
 
   } else if(request.what === "resumePage") {
-
+   
     // remove from disabled-tabId table
     delete disabled[request.tabId];
     //reload the page
     chrome.tabs.reload(request.tabId);
     
   } else if( request.what === "isOnDisabledList" ){
-
+      
       if (typeof disabled[request.tabId] !== 'undefined') {
 
       callback && callback({
