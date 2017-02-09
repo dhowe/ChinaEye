@@ -22,7 +22,7 @@ function postCheckPage(res) {
     // console.log("block");
 
     // Create text for the CSS we need for our font & Image
-    var css = document.createElement("style"),
+    var css = document.createElement("style"), redact, 
         fontFace = '@font-face { font-family: Redacted; src: url("' + chrome.extension.getURL('fonts/redacted-regular.woff') + '"); }',
         rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
     
@@ -32,6 +32,7 @@ function postCheckPage(res) {
 
 
     // Apply our font/color to all sub-elements
+      (redact = function () {
       var elements = document.getElementsByTagName("*");
       for (var i = 0; i < elements.length; i++) {
         if (elements[i].tagName !== 'SCRIPT' && elements[i].tagName !== 'STYLE'){
@@ -41,6 +42,7 @@ function postCheckPage(res) {
 
         }
       }
+    })('body');
   
     // rerun our function when new nodes are inserted
     document.addEventListener('DOMNodeInserted', function (e) {
