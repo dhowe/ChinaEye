@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log(res);
 
       //console.log('isActive?',res);
-
       updateButton(button, tabs[0].id, !res || res.active);
     });
   });
@@ -43,10 +42,11 @@ function updateButton(button, tabId, on) {
           tabId: tabId
       }, function(res) {
 
-          if (res.status == 'disabled') {
+          if (res && res.status == 'disabled') {
               button.disabled = false;
               button.innerHTML = 'Resume on this Page';
-          } else
+          } 
+          else
               button.disabled = !on;
       });
 

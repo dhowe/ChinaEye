@@ -27,9 +27,9 @@ function postCheckPage(res) {
         rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
     
     css.type = "text/css";
+    css.id = "rd_style";
     css.innerHTML = fontFace + rdImageStyle;
     document.getElementsByTagName('head')[0].appendChild(css);
-
 
     // Apply our font/color to all sub-elements
       (redact = function () {
