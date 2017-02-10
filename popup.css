@@ -1,12 +1,33 @@
-
 body {
-    background-color: #EBC502;
+    background-color: white;
     color: #555;
 }
+
+@font-face { 
+	font-family: Redacted; 
+	src: url("fonts/redacted-regular.woff"); }
+}
+
 img {
-  margin: 0px 2px 4px 2px;
+    margin: 0px 2px 4px 2px;
 }
 
 button {
-  width: 60px
+    margin: 5px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background-color: white;
+    color: black;
+    width: 200px;
+    font-size: 12px;
+    border: 1px;
+    border-style: solid;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}
+
+button:focus {
+    outline: 0;
 }

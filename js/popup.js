@@ -16,10 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.sendMessage(tabs[0].id, {
       what: 'isActive',
     }, function (res) {
-      console.log(res);
-
       //console.log('isActive?',res);
-
       updateButton(button, tabs[0].id, !res || res.active);
     });
   });
@@ -36,17 +33,18 @@ function updateButton(button, tabId, on) {
 
   if (on) {
       button.disabled = false;
-      button.innerHTML = 'Disable on this page';
+      button.innerHTML = 'Disable ChinaEye on this page';
   } else {
       chrome.runtime.sendMessage({
           what: "isOnDisabledList",
           tabId: tabId
       }, function(res) {
 
-          if (res.status == 'disabled') {
+          if (res && res.status == 'disabled') {
               button.disabled = false;
-              button.innerHTML = 'Resume on this Page';
-          } else
+              button.innerHTML = 'Resume ChinaEye on this Page';
+          } 
+          else
               button.disabled = !on;
       });
 
@@ -63,7 +61,6 @@ function updateButton(button, tabId, on) {
     });
 
     window.close();
-
 
   });
 
