@@ -34,7 +34,7 @@ function postCheckPage(res) {
     document.getElementsByTagName('head')[0].appendChild(css);
 
     // Apply our font/color to all sub-elements
-      (redact = function () {
+    (redact = function () {
       var elements = document.getElementsByTagName("*");
       for (var i = 0; i < elements.length; i++) {
         if (elements[i].tagName !== 'SCRIPT' && elements[i].tagName !== 'STYLE'){

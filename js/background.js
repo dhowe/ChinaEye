@@ -5,13 +5,13 @@ var disabled = {},
   triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse', '草泥'],
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'];
 
-chrome.runtime.onStartup.addListener(function () {
-  getTriggersFromLocalStorage();
-  updateCheck();
+chrome.runtime.onStartup.addListener(function() {
+    getTriggersFromLocalStorage();
+    updateCheck();
 });
 
-chrome.runtime.onInstalled.addListener(function(){
-  getTriggersFromLocalStorage();
+chrome.runtime.onInstalled.addListener(function() {
+    getTriggersFromLocalStorage();
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     }
     
     //ignore chrome pages
-    if(request.location.href.indexOf("chrome://") === 0) return;
+    if (request.location.href.indexOf("chrome://") === 0) return;
 
     var hostRegex = new RegExp(engines.join('|'), 'i'),
         keyvals = keysValues(request.location.href);
@@ -81,14 +81,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     // and reload (will trigger content-script and be ignored)
     chrome.tabs.reload(request.tabId);
 
-  } else if(request.what === "resumePage") {
+  } else if (request.what === "resumePage") {
    
     // remove from disabled-tabId table
     delete disabled[request.tabId];
     //reload the page
     chrome.tabs.reload(request.tabId);
     
-  } else if( request.what === "isOnDisabledList" ){
+  } else if ( request.what === "isOnDisabledList" ) {
       
       if (typeof disabled[request.tabId] !== 'undefined') {
 
@@ -109,13 +109,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 function keysValues(href) {
   
   var vars = [],
-    hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+      hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
 
   for (var i = 0; i < hashes.length; i++) {
-    var hash = hashes[i].split('=');
+     var hash = hashes[i].split('=');
 
-    vars.push(hash[0]);
-    vars[hash[0]] = hash[1];
+     vars.push(hash[0]);
+     vars[hash[0]] = hash[1];
   }
 
   return vars;
@@ -140,8 +140,7 @@ var checkPage = function (tab, callback) {
 
 var parseResults = function (html) {
 
-  var fails = 0,
-    locs, vals, result = {};
+  var fails = 0, locs, vals, result = {};
 
   // remove img tags before calling find
   html = html.replace(/<img\b[^>]*>/ig, '');
@@ -205,8 +204,7 @@ var updateCheck = function () {
 
     lastCheckTime = Date.parse(data.lastCheckTime);
 
-    var currentTime = Date.now(),
-      twelveHours = 5;
+    var currentTime = Date.now(), twelveHours = 5;
 
     if (currentTime - lastCheckTime < twelveHours) {
 
@@ -236,11 +234,11 @@ var getTriggersFromLocalStorage = function (rules){
 var processTriggers = function (rules) {
   for (var index in rules) {
 
-    var rule = rules[index];
-    var keywords = rule.replace(/ /g, "+").split("|");
+    var rule = rules[index],
+        keywords = rule.replace(/ /g, "+").split("|");
+
     triggers.push(keywords[0]);
-    if (keywords.length > 1)
-      triggers.push(keywords[1]);
+    if (keywords.length > 1) triggers.push(keywords[1]);
   }
   showLogs && console.log('Triggers ready.');
 }
@@ -248,7 +246,7 @@ var processTriggers = function (rules) {
 var processList = function (list) {
 
   var txtArr = list.split("\n"),
-    time = new Date().toLocaleString();
+      time = new Date().toLocaleString();
 
   showLogs && console.log("Check time", time);
 
