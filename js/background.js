@@ -1,4 +1,4 @@
-var showLogs = false;
+var showLogs = true;
 
 var disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
@@ -115,7 +115,6 @@ function keysValues(href) {
 var checkPage = function (tab, callback) {
 
   showLogs && console.log('checkPage:', tab.url);
-
   $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
     success: function (data) {
       callback(parseResults(data));
