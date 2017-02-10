@@ -17,7 +17,7 @@ function sendCheckPage() {
 
 function postCheckPage(res) {
 
-  console.log("res", res);
+  // console.log("res", res);
 
   if (res && res.status === 'block') {
 

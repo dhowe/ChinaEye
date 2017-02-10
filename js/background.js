@@ -1,13 +1,16 @@
-var showLogs = true;
+var showLogs = false;
 
 var disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
   triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse', '草泥'],
-  engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', '^(([a-z]{2})\.search)|search\.yahoo\.com$'];
+  engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'];
 
-chrome.runtime.onStartup.addListener(updateCheck);
+chrome.runtime.onStartup.addListener(function () {
+  getTriggersFromLocalStorage();
+  updateCheck();
+});
 
-chrome.runtime.onInstalled.addListener(function () {
+chrome.runtime.onInstalled.addListener(function(){
   getTriggersFromLocalStorage();
 });
 
@@ -46,6 +49,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     if (keyword && keyword.length && hostRegex.test(request.location.host)) {
 
       var query = decodeURI(keyword.toLowerCase());
+     
+      if (query.indexOf(" ") > -1) 
+        query = query.replace(" ", "+");
+
       showLogs && console.log('search: ' + query);
 
       for (var i = 0; i < triggers.length; i++) {
@@ -92,6 +99,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     }
 
   }
+
+  return true;
 
 });
 
@@ -197,7 +206,7 @@ var updateCheck = function () {
     lastCheckTime = Date.parse(data.lastCheckTime);
 
     var currentTime = Date.now(),
-      twelveHours = 1000 * 60 * 60 * 12;
+      twelveHours = 5;
 
     if (currentTime - lastCheckTime < twelveHours) {
 
@@ -207,7 +216,7 @@ var updateCheck = function () {
 
     } else {
 
-      downloadloadList(processList);
+      downloadList(processList);
     }
   });
 }
