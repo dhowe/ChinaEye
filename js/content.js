@@ -17,17 +17,16 @@ function sendCheckPage() {
 
 function postCheckPage(res) {
 
-  // console.log("res", res);
-
   if (res && res.status === 'block') {
 
-    // console.log("block");
+    // TODO: make sure that our style tag is not being added multiple times on the same page
 
     // Create text for the CSS we need for our font & Image
-    var css = document.createElement("style"), redact, 
-        fontFace = '@font-face { font-family: Redacted; src: url("' + chrome.extension.getURL('fonts/redacted-regular.woff') + '"); }',
-        rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
-    
+    var css = document.createElement("style"),
+      redact, fontFace = '@font-face { font-family: Redacted; src: url("'
+        + chrome.extension.getURL('fonts/redacted-regular.woff') + '"); }',
+      rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
+
     css.type = "text/css";
     css.id = "rd_style";
     css.innerHTML = fontFace + rdImageStyle;
@@ -37,19 +36,18 @@ function postCheckPage(res) {
     (redact = function () {
       var elements = document.getElementsByTagName("*");
       for (var i = 0; i < elements.length; i++) {
-        if (elements[i].tagName !== 'SCRIPT' && elements[i].tagName !== 'STYLE'){
-          elements[i].style.background = 'none';
-          elements[i].style.color = '#000';
-          elements[i].style.fontFamily = 'Redacted';
 
+        if (elements[i].tagName !== 'SCRIPT' && elements[i].tagName !== 'STYLE') {
+          elements[i].style.color = '#000';
+          elements[i].style.background = 'none';
+          elements[i].style.fontFamily = 'Redacted';
         }
       }
     })('body');
-  
+
     // rerun our function when new nodes are inserted
     document.addEventListener('DOMNodeInserted', function (e) {
-    // console.log('DOMNodeInserted');
-    redact(e.relatedNode);
+      redact(e.relatedNode);
     });
   }
 }
@@ -59,11 +57,13 @@ chrome.runtime.onMessage.addListener(
   function (message, sender, callback) {
 
     if (message.what === "isActive") {
+
       //console.log("cs-send", 'active:'+(document.querySelector('#rd_style')!=null));
       callback({
         'active': (document.querySelector('#rd_style') != null)
       });
     }
+
     // compare updated URL to original URL
     else if (message.what === "tabUpdate" && message.url !== url) {
 

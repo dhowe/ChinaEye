@@ -1,33 +1,30 @@
 body {
-    background-color: white;
-    color: #555;
+  background-color: white;
+  color: #555;
+}
+@font-face {
+  font-family: Redacted;
+  src: url("fonts/redacted-regular.woff");
 }
 
-@font-face { 
-	font-family: Redacted; 
-	src: url("fonts/redacted-regular.woff"); }
 }
-
 img {
-    margin: 0px 2px 4px 2px;
+  margin: 0px 2px 4px 2px;
 }
-
 button {
-    margin: 5px;
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    background-color: white;
-    color: black;
-    width: 200px;
-    font-size: 12px;
-    border: 1px;
-    border-style: solid;
+  margin: 5px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: white;
+  color: black;
+  width: 200px;
+  font-size: 12px;
+  border: 1px;
+  border-style: solid;
 }
-
 button:hover {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
-
 button:focus {
-    outline: 0;
+  outline: 0;
 }

@@ -1,22 +1,27 @@
-var showLogs = false;
 
-var disabled = {},
+var logs = true, disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
-  triggers = ['shang+fulin+graft', 'zhang+yannan', 'celestial+empire', 'grass+mud+horse', '草泥'],
-  engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'];
+  triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
+  engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
+  listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt';
 
-chrome.runtime.onStartup.addListener(function() {
-    getTriggersFromLocalStorage();
-    updateCheck();
+chrome.runtime.onStartup.addListener(function () {
+
+  getTriggersFromLocalStorage();
+  updateCheck();
 });
 
-chrome.runtime.onInstalled.addListener(function() {
-    getTriggersFromLocalStorage();
+chrome.runtime.onInstalled.addListener(function () {
+
+  // TODO: if just installed, how can there be triggers in local storage?
+  getTriggersFromLocalStorage();
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+
   //console.log('onUpdated', tabId, changeInfo, tab);
   if (changeInfo && changeInfo.status == "complete") {
+
     chrome.tabs.sendMessage(tabId, {
       what: 'tabUpdate',
       url: tab.url
@@ -38,28 +43,30 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         status: 'disabled'
       });
     }
-    
+
     //ignore chrome pages
     if (request.location.href.indexOf("chrome://") === 0) return;
 
     var hostRegex = new RegExp(engines.join('|'), 'i'),
-        keyvals = keysValues(request.location.href);
-        keyword = keyvals.q || keyvals.p;
+      keyvals = keysValues(request.location.href);
+
+    keyword = keyvals.q || keyvals.p;
 
     if (keyword && keyword.length && hostRegex.test(request.location.host)) {
 
       var query = decodeURI(keyword.toLowerCase());
-     
-      if (query.indexOf(" ") > -1) 
+
+      if (query.indexOf(" ") > -1)
         query = query.replace(" ", "+");
 
-      showLogs && console.log('search: ' + query);
+      logs && console.log('search: ' + query);
 
-      for (var i = 0; i < triggers.length; i++) {
+      //for (var i = 0; i < triggers.length; i++) {
+      for (let trigger of triggers) {
 
-        if (query === triggers[i]) {
+        if (query === trigger) {
 
-          showLogs && console.log('block: ' + query);
+          logs && console.log('block: ' + query);
 
           callback({
             status: 'block',
@@ -82,22 +89,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     chrome.tabs.reload(request.tabId);
 
   } else if (request.what === "resumePage") {
-   
+
     // remove from disabled-tabId table
     delete disabled[request.tabId];
+
     //reload the page
     chrome.tabs.reload(request.tabId);
-    
-  } else if ( request.what === "isOnDisabledList" ) {
-      
-      if (typeof disabled[request.tabId] !== 'undefined') {
+
+  } else if (request.what === "isOnDisabledList") {
+
+    if (typeof disabled[request.tabId] !== 'undefined') {
 
       callback && callback({
         status: 'disabled'
       });
 
     }
-
   }
 
   return true;
@@ -107,15 +114,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 /**************************** functions ******************************/
 
 function keysValues(href) {
-  
+
   var vars = [],
-      hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+    hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
 
   for (var i = 0; i < hashes.length; i++) {
-     var hash = hashes[i].split('=');
+    var hash = hashes[i].split('=');
 
-     vars.push(hash[0]);
-     vars[hash[0]] = hash[1];
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
   }
 
   return vars;
@@ -123,7 +130,7 @@ function keysValues(href) {
 
 var checkPage = function (tab, callback) {
 
-  showLogs && console.log('checkPage:', tab.url);
+  logs && console.log('checkPage:', tab.url);
   $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
     success: function (data) {
       callback(parseResults(data));
@@ -155,17 +162,19 @@ var parseResults = function (html) {
   }
 
   result.status = fails > 2 ? 'block' : 'allow';
-  showLogs && console.log('result:', locs.length, vals.length, result);
+
+  logs && console.log('result:', locs.length, vals.length, result);
+
   return result;
 }
 
 var downloadList = function (callback) {
 
   $.ajax({
-    url: 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
+    url: listUrl,
     type: 'get',
     success: function (data) {
-      showLogs && console.log("Got list: " + data.length);
+      logs && console.log("Got list: " + data.length, data);
       callback(data);
     },
     error: function (e) {
@@ -179,11 +188,12 @@ var downloadList = function (callback) {
 }
 
 var loadListFromLocal = function (callback) {
+
   $.ajax({
     url: chrome.runtime.getURL("sensitiveKeywords.txt"),
     type: 'get',
     success: function (data) {
-      showLogs && console.log("Load list from Local: " + data.length);
+      logs && console.log("Load list from Local: " + data.length + 'entries');
       callback(data);
     },
     error: function (e) {
@@ -200,15 +210,16 @@ var updateCheck = function () {
 
   var lastCheckTime = chrome.storage.local.get('lastCheckTime', function (data) {
 
-    showLogs && console.log("lastCheckTime", data.lastCheckTime);
+    logs && console.log("lastCheckTime", data.lastCheckTime);
 
     lastCheckTime = Date.parse(data.lastCheckTime);
 
-    var currentTime = Date.now(), twelveHours = 5;
+    var currentTime = Date.now(),
+      twelveHours = 5;
 
     if (currentTime - lastCheckTime < twelveHours) {
 
-      showLogs && console.log("No need to update");
+      logs && console.log("No need to update");
 
       return;
 
@@ -219,42 +230,66 @@ var updateCheck = function () {
   });
 }
 
-var getTriggersFromLocalStorage = function (rules){
-    //if it returns null, loadFrom local copy
-    chrome.storage.local.get('list', function (data) {
-        if(data.list === undefined) loadListFromLocal(processList);
-        else {
-          showLogs && console.log("Get triggers from local storage.");
-          processTriggers(data.list);
-        }
-      });
+var getTriggersFromLocalStorage = function (rules) {
+
+  //if it returns null, loadFrom local copy
+  chrome.storage.local.get('list', function (data) {
+    if (data.list === undefined) loadListFromLocal(processList);
+    else {
+      logs && console.log("Get triggers from local storage: ",data.list);
+      processTriggers(data.list);
+    }
+  });
 
 }
 
 var processTriggers = function (rules) {
+
+  if (!rules || !rules.length) console.warn('Null rules', rules);
+
   for (var index in rules) {
 
-    var rule = rules[index],
-        keywords = rule.replace(/ /g, "+").split("|");
+    var rule = rules[index];
 
-    triggers.push(keywords[0]);
-    if (keywords.length > 1) triggers.push(keywords[1]);
+    if (typeof rule !== "string") continue;
+
+    var keywords = rule.replace(/ /g, "+").split("|");
+
+    // TODO: do some valid keywords have only one part, or should we ignore them as invalid ?
+    // if (keywords.length != 2) continue;
+
+    // TODO: triggers should probably be a Set rather than array (done)
+    if (isValid(keywords[0], triggers))
+      triggers.add(keywords[0]);
+
+    if (keywords.length > 1 && isValid(keywords[1], triggers))
+      triggers.add(keywords[1]);
   }
-  showLogs && console.log('Triggers ready.');
+
+  logs && console.log(triggers.size + ' triggers loaded/processed');
+}
+
+var isValid = function (trigger, list) {
+
+  var ok = typeof trigger === 'string' && trigger.length;// && !list.contains(trigger);
+
+  //if (!ok && logs) console.warn('Bad: "'+trigger+'"');
+
+  return ok;
 }
 
 var processList = function (list) {
 
   var txtArr = list.split("\n"),
-      time = new Date().toLocaleString();
+    time = new Date().toLocaleString();
 
-  showLogs && console.log("Check time", time);
+  logs && console.log("Check time", time);
 
   var rules = txtArr.filter(function (line) {
     return /^(?!!|\[).*/.test(line)
   });
 
-  showLogs && console.log("Example", rules[1]);
+  logs && console.log("Example:", rules[1]);
 
   chrome.storage.local.set({
     list: rules
@@ -265,4 +300,49 @@ var processList = function (list) {
   });
 
   processTriggers(rules);
+}
+
+/**************************** polyfill ******************************/
+
+if (Array.prototype.contains instanceof Function === false) {
+
+  Array.prototype.contains = function (a) {
+    var b = this.length;
+    while (b--) {
+      if (this[b] === a) {
+        return true;
+      }
+    }
+    return false;
+  };
+}
+
+if (String.prototype.startsWith instanceof Function === false) {
+  String.prototype.startsWith = function (needle, pos) {
+    if (typeof pos !== 'number') {
+      pos = 0;
+    }
+    return this.lastIndexOf(needle, pos) === pos;
+  };
+}
+
+if (String.prototype.endsWith instanceof Function === false) {
+  String.prototype.endsWith = function (needle, pos) {
+    if (typeof pos !== 'number') {
+      pos = this.length;
+    }
+    pos -= needle.length;
+    return this.indexOf(needle, pos) === pos;
+  };
+}
+
+if (String.prototype.includes instanceof Function === false) {
+  String.prototype.includes = function (needle, pos) {
+    if (typeof pos !== 'number') {
+      pos = 0;
+    }
+    if (start + search.length > this.length)
+      return false;
+    return this.indexOf(needle, pos) > -1;
+  };
 }
