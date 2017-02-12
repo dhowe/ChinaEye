@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     }
 
     // otherwise check with china servers
-    checkPage(sender.tab, callback);
+    checkPage(request.location.href, callback);
 
   } else if (request.what === "disablePage") { // from popup
 
@@ -125,10 +125,15 @@ function keysValues(href) {
   return vars;
 }
 
-var checkPage = function (tab, callback) {
+var checkPage = function (url, callback) {
 
-  logs && console.log('checkPage:', tab.url);
-  $.ajax(gfw + '/index.php?siteurl=' + tab.url, {
+  //chrome newtab
+  if (url.indexOf("/chrome/newtab?") != -1) 
+    url = url.split("/chrome/newtab?")[0];
+
+   logs && console.log('checkPage:', url);
+
+  $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
       callback(parseResults(data));
     },
