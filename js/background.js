@@ -171,7 +171,7 @@ var downloadList = function (callback) {
     url: listUrl,
     type: 'get',
     success: function (data) {
-      logs && console.log("Got list from: "  + listUrl + " " +  data[100]);
+      logs && console.log("Got list from: "  + listUrl + " " +  data.length);
       callback(data);
     },
     error: function (e) {
