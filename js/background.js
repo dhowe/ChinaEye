@@ -6,15 +6,12 @@ var logs = true, disabled = {},
   listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt';
 
 chrome.runtime.onStartup.addListener(function () {
-
   getTriggersFromLocalStorage();
   updateCheck();
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-
-  // TODO: if just installed, how can there be triggers in local storage?
-  getTriggersFromLocalStorage();
+  loadListFromLocal(processList);
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -174,7 +171,7 @@ var downloadList = function (callback) {
     url: listUrl,
     type: 'get',
     success: function (data) {
-      logs && console.log("Got list: " + data.length, data);
+      logs && console.log("Got list from: "  + listUrl + " " +  data[100]);
       callback(data);
     },
     error: function (e) {
@@ -193,7 +190,7 @@ var loadListFromLocal = function (callback) {
     url: chrome.runtime.getURL("sensitiveKeywords.txt"),
     type: 'get',
     success: function (data) {
-      logs && console.log("Load list from Local: " + data.length + 'entries');
+      logs && console.log("Load list from Local: " + data.length + ' entries');
       callback(data);
     },
     error: function (e) {
