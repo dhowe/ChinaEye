@@ -19,18 +19,19 @@ function postCheckPage(res) {
 
   if (res && res.status === 'block') {
 
-    // TODO: make sure that our style tag is not being added multiple times on the same page
+    // TODO: make sure that our style tag is not being added multiple times on the same page(done)
 
     // Create text for the CSS we need for our font & Image
-    var css = document.createElement("style"),
-      redact, fontFace = '@font-face { font-family: Redacted; src: url("'
-        + chrome.extension.getURL('fonts/redacted-regular.woff') + '"); }',
-      rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
+    if (document.getElementById("rd_style") === null) {
+     var css = document.createElement("style"),
+         redact, fontFace = '@font-face { font-family: Redacted; src: url("' + chrome.extension.getURL('fonts/redacted-regular.woff') + '"); }',
+         rdImageStyle = 'img, image {\n-webkit-filter: brightness(0);\n}';
 
-    css.type = "text/css";
-    css.id = "rd_style";
-    css.innerHTML = fontFace + rdImageStyle;
-    document.getElementsByTagName('head')[0].appendChild(css);
+     css.type = "text/css";
+     css.id = "rd_style";
+     css.innerHTML = fontFace + rdImageStyle;
+     document.getElementsByTagName('head')[0].appendChild(css);
+    }
 
     // Apply our font/color to all sub-elements
     (redact = function () {
