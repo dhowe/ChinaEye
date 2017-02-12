@@ -19,8 +19,6 @@ function postCheckPage(res) {
 
   if (res && res.status === 'block') {
 
-    // TODO: make sure that our style tag is not being added multiple times on the same page(done)
-
     // Create text for the CSS we need for our font & Image
     if (document.getElementById("rd_style") === null) {
      var css = document.createElement("style"),

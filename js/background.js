@@ -314,10 +314,6 @@ var processTriggers = function (rules) {
 
     var keywords = rule.replace(/ /g, "+").split("|");
 
-    // TODO: do some valid keywords have only one part, or should we ignore them as invalid ?
-    // if (keywords.length != 2) continue;
-
-    // TODO: triggers should probably be a Set rather than array (done)
     if (isValid(keywords[0], triggers))
       triggers.add(keywords[0]);
 
