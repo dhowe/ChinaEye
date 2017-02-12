@@ -23,26 +23,40 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       what: 'tabUpdate',
       url: tab.url
     });
+
+    if(tab.url === undefined){
+      setIcon(tabId, "disabled");
+
+    }
+       
   }
 });
+
+/**************************** Messaging ******************************/
+
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   if (request.what === "checkPage") {
 
-    if (typeof disabled[sender.tab.id] !== 'undefined') {
+    //DIABLED
+    //1.on disabled list
+    //2.chrome page
+
+    if (typeof disabled[sender.tab.id] !== 'undefined' || request.location.href.indexOf("chrome://") === 0) {
 
       // setTimeout(function () {
       //   delete disabled[sender.tab.id];
       // }, 5000); // remove after 5 seconds //why?
 
+      setIcon(sender.tab.id, "disabled");
+
       callback && callback({
         status: 'disabled'
       });
-    }
 
-    //ignore chrome pages
-    if (request.location.href.indexOf("chrome://") === 0) return;
+      return;
+    }
 
     var hostRegex = new RegExp(engines.join('|'), 'i'),
       keyvals = keysValues(request.location.href);
@@ -70,13 +84,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             trigger: query
           });
 
+          setIcon(sender.tab.id, "blocked");
+
           return; // got one, we're done
         }
       }
     }
 
     // otherwise check with china servers
-    checkPage(request.location.href, callback);
+    checkPage(sender.tab, request.location.href, callback);
 
   } else if (request.what === "disablePage") { // from popup
 
@@ -125,7 +141,40 @@ function keysValues(href) {
   return vars;
 }
 
-var checkPage = function (url, callback) {
+var setIcon = function(tabId, iconStatus) {
+   
+    if ( tabId === 0 ) {
+        return;
+    }
+    
+    var onIconReady = function() {
+        if ( chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        } else{
+          //tab exists
+        }
+    };
+
+    var iconPaths;
+
+    switch(iconStatus) {
+        case 'blocked':
+            iconPaths = { '16': 'img/blocked16.png', '32': 'img/blocked32.png'};
+            break;
+        case 'disabled':
+            iconPaths = { '16': 'img/disabled16.png', '32': 'img/disabled32.png'};
+            break;
+        default://on
+            iconPaths = { '16': 'img/icon16.png', '32': 'img/icon32.png'};
+    }
+    // console.log(tabId, iconPaths);
+    chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
+};
+
+/**************************** core ******************************/
+
+var checkPage = function (tab, url, callback) {
 
   //chrome newtab
   if (url.indexOf("/chrome/newtab?") != -1) 
@@ -133,9 +182,16 @@ var checkPage = function (url, callback) {
 
    logs && console.log('checkPage:', url);
 
+   var onSuccess = function (data) {
+    var result = parseResults(data);
+        setIcon(tab.id, result.status);
+        return result;
+
+   }
+
   $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
-      callback(parseResults(data));
+      callback(onSuccess(data));
     },
     error: function (e) {
       callback({
@@ -146,6 +202,7 @@ var checkPage = function (url, callback) {
     }
   });
 }
+
 
 var parseResults = function (html) {
 
