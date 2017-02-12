@@ -25,6 +25,6 @@ button:hover {
   background-color: black;
   color: white;
 }
-button:focus {
+a:focus, button:focus {
   outline: 0;
 }

@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.sendMessage(tabs[0].id, {
       what: 'isActive',
     }, function (res) {
-
+       //TODO: disable for this site / disable for this search
       //console.log('isActive?',res);
-      updateButton(button, tabs[0].id, !res || res.active);
+      // updateButton(button, tabs[0].id, !res || res.active);
     });
   });
 });
