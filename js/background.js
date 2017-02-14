@@ -16,9 +16,9 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-  //console.log('onUpdated', tabId, changeInfo, tab);
+  // console.log('onUpdated', tabId, changeInfo, tab);
   if (changeInfo && changeInfo.status == "complete") {
-
+   
     chrome.tabs.sendMessage(tabId, {
       what: 'tabUpdate',
       url: tab.url
@@ -26,7 +26,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if(tab.url === undefined){
       setIcon(tabId, "disabled");
-
     }
        
   }
@@ -274,9 +273,10 @@ var updateCheck = function () {
     lastCheckTime = Date.parse(data.lastCheckTime);
 
     var currentTime = Date.now(),
-      twelveHours = 5;
+      twelveHours = 1000 * 60 * 60 * 12,
+      checkInterval = twelveHours;
 
-    if (currentTime - lastCheckTime < twelveHours) {
+    if (currentTime - lastCheckTime < checkInterval) {
 
       logs && console.log("No need to update");
 
