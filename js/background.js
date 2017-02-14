@@ -16,9 +16,9 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-  //console.log('onUpdated', tabId, changeInfo, tab);
+  // console.log('onUpdated', tabId, changeInfo, tab);
   if (changeInfo && changeInfo.status == "complete") {
-
+   
     chrome.tabs.sendMessage(tabId, {
       what: 'tabUpdate',
       url: tab.url
@@ -26,7 +26,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if(tab.url === undefined){
       setIcon(tabId, "disabled");
-
     }
        
   }
