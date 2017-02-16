@@ -1,66 +1,99 @@
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function() {
 
-  var button = document.querySelector('#rd_button');
+    chrome.tabs.query({
 
-  chrome.tabs.query({
+        active: true,
+        currentWindow: true
 
-    active: true,
-    currentWindow: true
+    }, function(tabs) {
+        var currentPageUrl = tabs[0].url;
+       
+        // ignore chrome urls
+        if (/^chrome:/.test(currentPageUrl)) {
+          updateButtons(0, 0);
+          return;
+        }
+            
+        // ask content-script if we are active
+        chrome.tabs.sendMessage(tabs[0].id, {
+            what: 'isActive',
+        }, function(res) {
+            updateButtons(currentPageUrl, res && res.active);
+        });
 
-  }, function (tabs) {
+        //button clicks
+        $(".whitelistButtons").click(function() {
 
-    // ignore chrome urls
-    if (/^chrome:/.test(tabs[0].url))
-      return updateButton(button, 0, 0);
+          var message = $(this).hasClass("resume") ? "resume" : "disable";
+           message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
+           
+          // console.log(message, currentPageUrl);
 
-    // ask content-script if we are active
-    chrome.tabs.sendMessage(tabs[0].id, {
-      what: 'isActive',
-    }, function (res) {
-       //TODO: disable for this site / disable for this search
-      //console.log('isActive?',res);
-      // updateButton(button, tabs[0].id, !res || res.active);
+          chrome.runtime.sendMessage({
+            what: message,
+            url: currentPageUrl
+          });
+
+          window.close();
+
+        })
+
+
     });
-  });
+
 });
 
-function updateButton(button, tabId, on) {
+function updateButtons(tabUrl, active) {
 
-  console.log('updateButton', on);
+      /*if we are active, button is set to default text(disable site/search)
+      if we are not active, check whether if page is in disabled list
+          if yes, button:resume on this Page
+          if not, disable the button*/
 
-  // if we are active, button:disable on this page
-  // if we are not active, check whether if page is in disabled list
-  // if yes, button:resume on this Page
+     //if we are blocking the page && it is from a search engine
+     //show disable search button
 
-  if (on) {
+     chrome.runtime.sendMessage({
+         what: "isOnSearchResultPage",
+         url: tabUrl
+     }, function(res) {
+         if (res) $('#disableSearch_button').show();
+     });
 
-    button.disabled = false;
-    button.innerHTML = 'Disable ChinaEye on this page';
+
+  if (active) {
+
 
   } else {
 
     chrome.runtime.sendMessage({
-      what: "isOnDisabledList",
-      tabId: tabId
+      what: "isOnWhiteList",
+      url: tabUrl
     }, function (res) {
-
+      console.log("isOnWhiteList? ", res);
       if (res && res.status == 'disabled') {
-        button.disabled = false;
-        button.innerHTML = 'Resume ChinaEye on this Page';
-      } else
-        button.disabled = !on;
+        //change the button text 
+        console.log("change button text");
+
+        if(res.lists.indexOf("whiteListedSites") !== -1) {
+          $('#disableSite_button').text("Resume for this site");//change i18n class in the future
+          $('#disableSite_button').addClass("resume");
+        }
+
+        if(res.lists.indexOf("whiteListedSearches") !== -1 &&  $('#disableSearch_button').css('display') !== 'none'){
+          $('#disableSearch_button').text("Resume for this search");
+          $('#disableSearch_button').addClass("resume");
+        } 
+
+      } else {
+
+         $('#disableSite_button').prop('disabled', true);
+
+      }    
+
     });
   }
-
-  button.addEventListener('click', function () {
-
-    var message = (on ? "disablePage" : "resumePage");
-
-    chrome.runtime.sendMessage({
-      what: message,
-      tabId: tabId
-    });
-
-    window.close();
-  });
 }
+
+
+

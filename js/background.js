@@ -1,9 +1,10 @@
 
-var logs = true, disabled = {},
+var logs = false, disabled = {},
   gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
-  listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt';
+  listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
+  hostRegex = new RegExp(engines.join('|'), 'i');
 
 chrome.runtime.onStartup.addListener(function () {
   getTriggersFromLocalStorage();
@@ -12,6 +13,12 @@ chrome.runtime.onStartup.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   loadListFromLocal(processList);
+    
+  chrome.storage.local.set({
+      "whitelistedSites": [""],
+      "whitelistedSearches": [""]
+  });
+
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -35,88 +42,72 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
-
   if (request.what === "checkPage") {
 
-    //DIABLED
-    //1.on disabled list
-    //2.chrome page
+      //DIABLED
+      //1.on disabled list
+      //2.chrome page
 
-    if (typeof disabled[sender.tab.id] !== 'undefined' || request.location.href.indexOf("chrome://") === 0) {
+      isOnWhiteList(request.location.href, function(result) {
 
-      // setTimeout(function () {
-      //   delete disabled[sender.tab.id];
-      // }, 5000); // remove after 5 seconds //why?
+        if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
-      setIcon(sender.tab.id, "disabled");
+            // setTimeout(function () {
+            //   delete disabled[sender.tab.id];
+            // }, 5000); // remove after 5 seconds //why?
 
-      callback && callback({
-        status: 'disabled'
-      });
+            setIcon(sender.tab.id, "disabled");
 
-      return;
-    }
+            callback && callback({
+                status: 'disabled'
+            });
 
-    var hostRegex = new RegExp(engines.join('|'), 'i'),
-      keyvals = keysValues(request.location.href);
+            return;
 
-    keyword = keyvals.q || keyvals.p;
+        } else {
 
-    if (keyword && keyword.length && hostRegex.test(request.location.host)) {
+            checkSearchEngines(sender.tab, request.location, callback);
+            // otherwise check with china servers
+            checkPage(sender.tab, request.location.href, callback);
 
-      var query = decodeURI(keyword.toLowerCase());
-
-      if (query.indexOf(" ") > -1)
-        query = query.replace(" ", "+");
-
-      logs && console.log('search: ' + query);
-
-      //for (var i = 0; i < triggers.length; i++) {
-      for (let trigger of triggers) {
-
-        if (query === trigger) {
-
-          logs && console.log('block: ' + query);
-
-          callback({
-            status: 'block',
-            trigger: query
-          });
-
-          setIcon(sender.tab.id, "blocked");
-
-          return; // got one, we're done
         }
-      }
+   })
+    
+
+  } else if (request.what === "disableSite" || request.what === "disableSearch" || request.what === "resumeSite" || request.what === "resumeSearch") { 
+    // from popup button
+    
+    var processButton;
+
+    switch (request.what) {
+        case "disableSite":
+            processButton = setSiteToWhitelist;
+            break;
+        case "disableSearch":
+            processButton = setSearchToWhitelist;
+            break;
+        case "resumeSite":
+            processButton = removeSiteFromWhitelist;
+            break;
+        case "resumeSearch":
+            processButton = removeSearchFromWhitelist;
+            break;
+
     }
-
-    // otherwise check with china servers
-    checkPage(sender.tab, request.location.href, callback);
-
-  } else if (request.what === "disablePage") { // from popup
-
-    // add to disabled-tabId table
-    disabled[request.tabId] = true;
+    // console.log("processButton", request.url);
+    processButton(request.url);
     // and reload (will trigger content-script and be ignored)
     chrome.tabs.reload(request.tabId);
 
-  } else if (request.what === "resumePage") {
+  } else if (request.what === "isOnWhiteList") {
+    isOnWhiteList(request.url, callback);
 
-    // remove from disabled-tabId table
-    delete disabled[request.tabId];
+  } else if (request.what === "isOnSearchResultPage") {
+    
+    var isSearchEngine = hostRegex.test(getHostNameFromURL(request.url));
+    var key = getSearchKeywordFromURL(request.url);
+    callback && callback(isSearchEngine && key);
 
-    //reload the page
-    chrome.tabs.reload(request.tabId);
-
-  } else if (request.what === "isOnDisabledList") {
-
-    if (typeof disabled[request.tabId] !== 'undefined') {
-
-      callback && callback({
-        status: 'disabled'
-      });
-
-    }
   }
 
   return true;
@@ -138,6 +129,103 @@ function keysValues(href) {
   }
 
   return vars;
+}
+
+function getSearchKeywordFromURL(url) {
+    var keyvals = keysValues(url);
+    var keyword = keyvals.q || keyvals.p;
+    var result
+    if(keyword) result = decodeURI(keyword.toLowerCase());
+
+    if (result && result.indexOf(" ") > -1)
+        result = result.replace(" ", "+");
+
+    return keyword;
+}
+var getHostNameFromURL = function(url) {
+    if(typeof url != "string") return null;
+    var matches = url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
+    var domain = matches && matches[1];
+    return domain;
+}
+
+function isOnWhiteList(targetUrl, callback) {
+    //Check whether the targetUrl is on WhiteList
+     
+    var host = getHostNameFromURL(targetUrl);
+    var lists = [];
+
+    chrome.storage.local.get(["whitelistedSites", "whitelistedSearches"], function(result) {
+        // console.log(result.whitelistedSites,result.whitelistedSearches);
+
+        if (host && result.whitelistedSites.length > 0){
+          for(let listItem of result.whitelistedSites){
+              if(listItem === host) lists.push("whiteListedSites");
+            }
+        }
+
+        if (host && hostRegex.test(host)) {
+            var key = getSearchKeywordFromURL(targetUrl);
+            for(let listItem of result.whitelistedSearches){
+              if(listItem === key) lists.push("whiteListedSearches");
+            }
+        }
+
+        if (lists.length > 0) {
+           
+            callback && callback({
+                status: 'disabled',
+                lists: lists
+            });
+
+        } else {
+            callback && callback({
+                status: 'allow'
+            });
+        }
+
+    });
+
+}
+
+function setSiteToWhitelist(targetUrl){
+  setEntryToList(getHostNameFromURL(targetUrl), "whitelistedSites");
+}
+
+function setSearchToWhitelist(targetUrl){
+  setEntryToList(getSearchKeywordFromURL(targetUrl), "whitelistedSearches");
+}
+
+function removeSiteFromWhitelist(targetUrl){
+  removeEntryFromList(getHostNameFromURL(targetUrl), "whitelistedSites");
+}
+
+function removeSearchFromWhitelist(targetUrl){
+  removeEntryFromList(getSearchKeywordFromURL(targetUrl), "whitelistedSearches");
+}
+
+function setEntryToList(entry, list){
+  chrome.storage.local.get(list, function(result) {
+      var data = result[list];
+      data.push(entry);
+      var item = {};
+      item[list] = data;
+      chrome.storage.local.set(item);
+  });
+
+}
+
+function removeEntryFromList(entry, list){
+  
+  chrome.storage.local.get(list, function(result) {
+      var data = result[list];
+      data.splice(data.indexOf(entry), 1);
+      var item = {};
+      item[list] = data;
+      chrome.storage.local.set(item);
+
+  });
+
 }
 
 var setIcon = function(tabId, iconStatus) {
@@ -169,7 +257,8 @@ var setIcon = function(tabId, iconStatus) {
     }
     // console.log(tabId, iconPaths);
     chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
-};
+}
+
 
 /**************************** core ******************************/
 
@@ -200,6 +289,38 @@ var checkPage = function (tab, url, callback) {
       console.warn(e);
     }
   });
+}
+
+var checkSearchEngines = function(tab, location, callback) {
+
+   if(!hostRegex.test(location.host))
+     return;
+
+    var keyword = getSearchKeywordFromURL(location.href);
+
+    if (keyword && keyword.length) {
+
+        logs && console.log('search: ' + keyword);
+
+        //for (var i = 0; i < triggers.length; i++) {
+        for (let trigger of triggers) {
+
+            if (keyword === trigger) {
+
+                logs && console.log('block: ' + keyword);
+
+                callback({
+                    status: 'block',
+                    trigger: keyword
+                });
+
+                setIcon(tab.id, "blocked");
+
+                return; // got one, we're done
+            }
+        }
+    }
+
 }
 
 
@@ -321,7 +442,7 @@ var processTriggers = function (rules) {
       triggers.add(keywords[1]);
   }
 
-  logs && console.log(triggers.size + ' triggers loaded/processed');
+  logs && console.log(triggers.size + ' triggers loaded/processed',triggers);
 }
 
 var isValid = function (trigger, list) {

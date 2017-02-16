@@ -11,6 +11,7 @@ body {
 img {
   margin: 0px 2px 4px 2px;
 }
+
 button {
   margin: 5px;
   font-family: "Helvetica Neue", Arial, sans-serif;
@@ -21,10 +22,17 @@ button {
   border: 1px;
   border-style: solid;
 }
-button:hover {
+button#disableSearch_button{
+  display: none;
+}
+button:hover:enabled {
   background-color: black;
   color: white;
 }
+button:disabled {
+  color:gray;
+}
+
 a:focus, button:focus {
   outline: 0;
 }
