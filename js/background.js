@@ -13,11 +13,10 @@ chrome.runtime.onStartup.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   loadListFromLocal(processList);
-  //test
-  
+    
   chrome.storage.local.set({
-      "whitelistedSites": ["www.facebook.com"],
-      "whitelistedSearches": ["test"]
+      "whitelistedSites": [""],
+      "whitelistedSearches": [""]
   });
 
 });
