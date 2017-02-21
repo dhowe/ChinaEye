@@ -1,6 +1,8 @@
 body {
   background-color: white;
   color: #555;
+  width:360px;
+  min-height:150px;
 }
 @font-face {
   font-family: Redacted;
@@ -13,24 +15,34 @@ img {
 }
 
 button {
-  margin: 5px;
+  margin: 7px 0;
   font-family: "Helvetica Neue", Arial, sans-serif;
-  background-color: white;
-  color: black;
-  width: 200px;
-  font-size: 12px;
+  width: 100%;
+  font-size: 14px;
   border: 1px;
   border-style: solid;
+  padding:3px 0;
+  vertical-align: middle;
+}
+button.modeButtons{
+  width:50%;
+  margin: 7px -5px;
+  background-color: white;
+  color:gray;
+  border-color: gray;
 }
 button#disableSearch_button{
   display: none;
 }
-button:hover:enabled {
+button:hover:enabled,button.modeButtons:disabled{
   background-color: black;
   color: white;
+  border-color: black;
 }
-button:disabled {
-  color:gray;
+button, button.modeButtons:hover:enabled{
+  background-color: white;
+  color:black;
+  border-color: black;
 }
 
 a:focus, button:focus {
