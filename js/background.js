@@ -1,5 +1,5 @@
 
-var logs = false, disabled = {},
+var logs = false, disabled = {}, isRedact = true;
   gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
@@ -31,17 +31,25 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       url: tab.url
     });
 
-    if(tab.url === undefined){
-      setIcon(tabId, "disabled");
-    }
+    updateBadge(tab);
        
   }
 });
+
+chrome.tabs.onActivated.addListener (function (activeInfo) {
+  chrome.tabs.get(activeInfo.tabId, updateBadge)
+
+});
+
+
 
 /**************************** Messaging ******************************/
 
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
+
+  // console.log(request);
+
   if (request.what === "checkPage") {
 
       //DIABLED
@@ -99,8 +107,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     // and reload (will trigger content-script and be ignored)
     chrome.tabs.reload(request.tabId);
 
+  } else if (request.what === "setRedact") {
+    
+    isRedact = request.value;
+    //update content script
+    chrome.tabs.reload(request.tabId);
+
   } else if (request.what === "isOnWhiteList") {
+
     isOnWhiteList(request.url, callback);
+
+  } else if (request.what === "isRedact") {
+
+   callback(isRedact);
 
   } else if (request.what === "isOnSearchResultPage") {
     
@@ -140,7 +159,7 @@ function getSearchKeywordFromURL(url) {
     if (result && result.indexOf(" ") > -1)
         result = result.replace(" ", "+");
 
-    return keyword;
+    return result;
 }
 var getHostNameFromURL = function(url) {
     if(typeof url != "string") return null;
@@ -255,25 +274,40 @@ var setIcon = function(tabId, iconStatus) {
         default://on
             iconPaths = { '16': 'img/icon16.png', '32': 'img/icon32.png'};
     }
-    // console.log(tabId, iconPaths);
+    console.log("Set Icon:", tabId, iconStatus);
     chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
 }
 
+var updateBadge = function(tab) {
+    checkBlockingStatus(tab.id, function(result) {
+        setIcon(tab.id, result.status);
+
+    })
+}
 
 /**************************** core ******************************/
+var checkBlockingStatus = function (tabId) {
+  //TODO: Store the blocking status of each tabId?
+  var result = {
+    status : "allow"
+  }
+  return result;
+}
 
 var checkPage = function (tab, url, callback) {
 
   //chrome newtab
-  if (url.indexOf("/chrome/newtab?") != -1) 
+  if (url && url.indexOf("/chrome/newtab?") != -1) 
     url = url.split("/chrome/newtab?")[0];
 
    logs && console.log('checkPage:', url);
 
-   var onSuccess = function (data) {
-    var result = parseResults(data);
-        setIcon(tab.id, result.status);
-        return result;
+   var onSuccess = function(data) {
+       var result = parseResults(data);
+       result['redact'] = isRedact;
+       setIcon(tab.id, result.status);
+
+       return result;
 
    }
 
@@ -311,7 +345,8 @@ var checkSearchEngines = function(tab, location, callback) {
 
                 callback({
                     status: 'block',
-                    trigger: keyword
+                    trigger: keyword,
+                    redact: isRedact
                 });
 
                 setIcon(tab.id, "blocked");

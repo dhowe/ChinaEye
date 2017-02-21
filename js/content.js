@@ -7,8 +7,6 @@ if (document.querySelector('#rd_style') === null) {
   sendCheckPage();
 }
 
-
-
 function sendCheckPage() {
 
   chrome.runtime.sendMessage({
@@ -19,10 +17,11 @@ function sendCheckPage() {
 
 function postCheckPage(res) {
 
-    // console.log(res);
-    status = res && res.status;
+   
+    status = res && res.status, isRedact = res && res.redact;
+     console.log(res, status === 'block', isRedact == true);
 
-    if ( status === 'block') {
+    if ( status === 'block' && isRedact == true) {
 
         // Create text for the CSS we need for our font & Image
         if (document.getElementById("rd_style") === null) {
@@ -44,6 +43,8 @@ function postCheckPage(res) {
 
 
     var redact = function(ele, status) {
+
+        if(!isRedact) return;
 
         elements = ele.getElementsByTagName("*");
        

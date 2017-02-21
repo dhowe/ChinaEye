@@ -27,12 +27,29 @@ $(document).ready(function() {
           var message = $(this).hasClass("resume") ? "resume" : "disable";
            message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
            
-          // console.log(message, currentPageUrl);
+          console.log(message, currentPageUrl);
+
 
           chrome.runtime.sendMessage({
             what: message,
             url: currentPageUrl
           });
+
+          window.close();
+
+        })
+
+        $(".modeButtons").click(function() {
+           var isRedact = $(this).attr("id") === "infoMode_button" ? false : true;
+
+          chrome.runtime.sendMessage({
+            what: "setRedact",
+            value: isRedact
+          });
+          
+           $(".modeButtons:disabled").prop('disabled', false);
+           $(this).prop('disabled', true);
+
 
           window.close();
 
@@ -63,8 +80,19 @@ function updateButtons(tabUrl, active) {
 
   if (active) {
 
+    $('#redactMode_button').prop('disabled', true);
 
   } else {
+
+   
+    chrome.runtime.sendMessage({
+         what: "isRedact",
+     }, function(res) {
+      console.log(res);
+        $('#infoMode_button').prop('disabled', !res);
+        $('#redactMode_button').prop('disabled', res);
+     });
+
 
     chrome.runtime.sendMessage({
       what: "isOnWhiteList",
