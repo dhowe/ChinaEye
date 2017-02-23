@@ -1,5 +1,5 @@
 
-var logs = false, disabled = {}, isRedact = true;
+var logs = true, disabled = {}, isRedact = true;
   gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   } else if (request.what === "getBlockingStatus") {
 
-    getBlockingStatus(request.tabId, function(result){
+    getBlockingStatus(request.tabId, request.url, function(result){
       // console.log("getBlockingStatus", request.tabId, result);
       callback(result);
     });
@@ -279,15 +279,18 @@ function removeBlockingStatus(tabId) {
     });
 }
 
-function getBlockingStatus(tabId, callback) {
+function getBlockingStatus(tabId, tabUrl, callback) {
     //get the blocking status from record
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
         var target = result.tabsBlockingStatus[tabId];
         if (target !== undefined) {
             callback(target);
         } else {
-          callback(null);
-          //TODO: checkpage
+
+          chrome.tabs.get(tabId, function(tab){
+             checkPage(tab, null, callback);
+          });
+         
         }
     });
 
@@ -330,8 +333,8 @@ var setIcon = function(tabId, iconStatus) {
 }
 
 var updateBadge = function(tabId) {
-
-    getBlockingStatus(tabId, function(result){
+    
+    getBlockingStatus(tabId, "", function(result){
       if(result) setIcon(tabId, result.status);
     });
 
@@ -373,9 +376,12 @@ var checkServer = function (tab, url, callback) {
 
 var checkPage = function(tab, location, callback) {
 
-   if (hostRegex.test(location.host)) {
+   var url = location ? location.href : tab.url,
+       host = location ? location.host : getHostNameFromURL(tab.url);
 
-    var keyword = getSearchKeywordFromURL(location.href);
+   if (hostRegex.test(host)) {
+
+    var keyword = getSearchKeywordFromURL(url);
 
     if (keyword && keyword.length) {
 
@@ -387,9 +393,8 @@ var checkPage = function(tab, location, callback) {
             if (keyword === trigger) {
 
                 logs && console.log('block: ' + keyword);
-                
               
-                setBlockingStatus(tab.id, location.href, {status: 'block'});
+                setBlockingStatus(tab.id, url, {status: 'block'});
                 setIcon(tab.id, "block");
 
                 callback({
@@ -407,7 +412,7 @@ var checkPage = function(tab, location, callback) {
   }
     
     //Otherwise
-  checkServer(tab, location.href, callback);
+  checkServer(tab, url, callback);
 
 }
 
