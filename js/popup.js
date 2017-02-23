@@ -54,7 +54,6 @@ $(document).ready(function() {
            $(".modeButtons:disabled").prop('disabled', false);
            $(this).prop('disabled', true);
 
-
           window.close();
 
         })

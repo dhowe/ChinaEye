@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       //1.on disabled list
       //2.chrome page
 
-      isOnWhiteList(request.location.href, function(result) {
+    isOnWhiteList(request.location.href, function(result) {
 
         if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
@@ -81,7 +81,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
         } else {
             checkPage(sender.tab, request.location, callback);
-   })
+          }
+   });
     
 
   } else if (request.what === "disableSite" || request.what === "disableSearch" || request.what === "resumeSite" || request.what === "resumeSearch") { 
@@ -163,10 +164,9 @@ function keysValues(href) {
 }
 
 function getSearchKeywordFromURL(url) {
-    var keyvals = keysValues(url);
-    var keyword = keyvals.q || keyvals.p;
-    var result
-    if(keyword) result = decodeURI(keyword.toLowerCase());
+    var keyvals = keysValues(url), keyword, result;
+    if (keyvals) keyword = keyvals.q || keyvals.p;
+    if (keyword) result = decodeURI(keyword.toLowerCase());
 
     if (result && result.indexOf(" ") > -1)
         result = result.replace(" ", "+");
