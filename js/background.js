@@ -69,7 +69,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             //   delete disabled[sender.tab.id];
             // }, 5000); // remove after 5 seconds //why?
 
-            setIcon(sender.tab.id, "disabled");
+            // console.log("disabled");
+
+            setBlockingStatus(sender.tab.id, request.location.href,"disabled");
 
             callback && callback({
                 status: 'disabled'
@@ -107,6 +109,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     }
     // console.log("processButton", request.url);
     processButton(request.url);
+
     // and reload (will trigger content-script and be ignored)
     chrome.tabs.reload(request.tabId);
 
@@ -120,9 +123,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     isOnWhiteList(request.url, callback);
 
+  } else if (request.what === "getBlockingStatus") {
+
+    getBlockingStatus(request.tabId, function(result){
+      // console.log("getBlockingStatus", request.tabId, result);
+      callback(result);
+    });
+
   } else if (request.what === "isRedact") {
 
-   callback(isRedact);
+   callback && callback(isRedact);
 
   } else if (request.what === "isOnSearchResultPage") {
     
@@ -142,7 +152,8 @@ function keysValues(href) {
 
   var vars = [], hashes;
     
-  if(href) hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+  if (href) hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+  if (hashes === undefined) return null;
 
   for (var i = 0; i < hashes.length; i++) {
     var hash = hashes[i].split('=');
@@ -318,6 +329,8 @@ var setIcon = function(tabId, iconStatus) {
         default://on
             iconPaths = { '16': 'img/icon16.png', '32': 'img/icon32.png'};
     }
+
+    // console.log("SetIcon", iconStatus);
     chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
 }
 
@@ -382,7 +395,7 @@ var checkPage = function(tab, location, callback) {
                 
               
                 setBlockingStatus(tab.id, location.href, "block");
-
+                setIcon(tab.id, "block");
 
                 callback({
                     status: 'block',
@@ -390,7 +403,7 @@ var checkPage = function(tab, location, callback) {
                     redact: isRedact
                 });
 
-                setIcon(tab.id, "block");
+
 
                 return true; // got one, we're done
             }

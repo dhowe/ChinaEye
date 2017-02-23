@@ -24,9 +24,9 @@ button {
   padding:3px 0;
   vertical-align: middle;
 }
-button.modeButtons{
-  width:50%;
-  margin: 7px -5px;
+button.modeButtons {
+    width: 50%;
+    margin: 7px -5px;
 }
 button#disableSearch_button{
   display: none;
@@ -36,12 +36,12 @@ button:disabled {
     color: gray;
     border-color: gray;
 }
-button:hover:enabled,button.modeButtons:disabled{
+button:hover:enabled,button.modeButtons:disabled,.active{
   background-color: black;
   color: white;
   border-color: black;
 }
-button, button.modeButtons:hover:enabled{
+button, button.modeButtons.enabled:disabled{
   background-color: white;
   color:black;
   border-color: black;

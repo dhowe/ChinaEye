@@ -6,7 +6,7 @@ $(document).ready(function() {
         currentWindow: true
 
     }, function(tabs) {
-        var currentPageUrl = tabs[0].url;
+        var currentPageUrl = tabs[0].url, currentPageTabId = tabs[0].id;
        
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
@@ -14,12 +14,14 @@ $(document).ready(function() {
           return;
         }
             
-        // ask content-script if we are active
-        chrome.tabs.sendMessage(tabs[0].id, {
-            what: 'isActive',
-        }, function(res) {
-            updateButtons(currentPageUrl, res && res.active);
-        });
+        //ask background about the blockingstatus
+        
+        chrome.runtime.sendMessage({
+            what: "getBlockingStatus",
+            tabId: currentPageTabId
+          }, function(res){
+            updateButtons(currentPageUrl, res);
+          });
 
         //button clicks
         $(".whitelistButtons").click(function() {
@@ -27,8 +29,7 @@ $(document).ready(function() {
           var message = $(this).hasClass("resume") ? "resume" : "disable";
            message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
            
-          console.log(message, currentPageUrl);
-
+          // console.log(message, currentPageUrl);
 
           chrome.runtime.sendMessage({
             what: message,
@@ -55,17 +56,21 @@ $(document).ready(function() {
 
         })
 
+        $(".modeButtons:enabled").hover(function() {
+           $(".modeButtons:disabled").toggleClass("enabled");
+        })
+
 
     });
 
 });
 
-function updateButtons(tabUrl, active) {
+function updateButtons(tabUrl, status) {
 
   var infoMode;
 
-      /*if we are active, button is set to default text(disable site/search)
-      if we are not active, check whether if page is in disabled list
+      /*if the page is blocked, button is set to default text(disable site/search)
+      if not, check whether if page is in disabled list
           if yes, button:resume on this Page
           if not, disable the button*/
 
@@ -79,23 +84,22 @@ function updateButtons(tabUrl, active) {
          if (res) $('#disableSearch_button').show();
      });
 
+  // console.log("Status?", status);
 
-  if (active) {
+  if (status === "block") {
 
     $('#redactMode_button').prop('disabled', true);
 
   } else {
-
    
     chrome.runtime.sendMessage({
          what: "isRedact",
      }, function(res) {
-      // console.log(res);
+        // console.log(res);
         infoMode = !res;
         $('#infoMode_button').prop('disabled', infoMode);
         $('#redactMode_button').prop('disabled', res);
      });
-
    
     chrome.runtime.sendMessage({
       what: "isOnWhiteList",
@@ -105,7 +109,6 @@ function updateButtons(tabUrl, active) {
       if (res && res.status == 'disabled') {
         //change the button text 
         // console.log("change button text");
-
         if(res.lists.indexOf("whiteListedSites") !== -1) {
           $('#disableSite_button').text("Resume for this site");//change i18n class in the future
           $('#disableSite_button').addClass("resume");
