@@ -62,6 +62,8 @@ $(document).ready(function() {
 
 function updateButtons(tabUrl, active) {
 
+  var infoMode;
+
       /*if we are active, button is set to default text(disable site/search)
       if we are not active, check whether if page is in disabled list
           if yes, button:resume on this Page
@@ -88,20 +90,21 @@ function updateButtons(tabUrl, active) {
     chrome.runtime.sendMessage({
          what: "isRedact",
      }, function(res) {
-      console.log(res);
-        $('#infoMode_button').prop('disabled', !res);
+      // console.log(res);
+        infoMode = !res;
+        $('#infoMode_button').prop('disabled', infoMode);
         $('#redactMode_button').prop('disabled', res);
      });
 
-
+   
     chrome.runtime.sendMessage({
       what: "isOnWhiteList",
       url: tabUrl
     }, function (res) {
-      console.log("isOnWhiteList? ", res);
+      // console.log("isOnWhiteList? ", res.status, infoMode);
       if (res && res.status == 'disabled') {
         //change the button text 
-        console.log("change button text");
+        // console.log("change button text");
 
         if(res.lists.indexOf("whiteListedSites") !== -1) {
           $('#disableSite_button').text("Resume for this site");//change i18n class in the future
@@ -114,8 +117,8 @@ function updateButtons(tabUrl, active) {
         } 
 
       } else {
-
-         $('#disableSite_button').prop('disabled', true);
+         // console.log("disable button");
+         $('.whitelistButtons').prop('disabled', true);
 
       }    
 

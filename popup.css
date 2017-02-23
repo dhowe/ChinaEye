@@ -27,12 +27,14 @@ button {
 button.modeButtons{
   width:50%;
   margin: 7px -5px;
-  background-color: white;
-  color:gray;
-  border-color: gray;
 }
 button#disableSearch_button{
   display: none;
+}
+button:disabled {
+    background-color: white;
+    color: gray;
+    border-color: gray;
 }
 button:hover:enabled,button.modeButtons:disabled{
   background-color: black;

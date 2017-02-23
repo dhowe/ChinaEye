@@ -9,6 +9,7 @@ var logs = false, disabled = {}, isRedact = true;
 chrome.runtime.onStartup.addListener(function () {
   getTriggersFromLocalStorage();
   updateCheck();
+  clearBlockingStatus();
 });
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -16,7 +17,8 @@ chrome.runtime.onInstalled.addListener(function () {
     
   chrome.storage.local.set({
       "whitelistedSites": [""],
-      "whitelistedSearches": [""]
+      "whitelistedSearches": [""],
+      "tabsBlockingStatus": {}
   });
 
 });
@@ -31,17 +33,20 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       url: tab.url
     });
 
-    updateBadge(tab);
+    updateBadge(tabId);
        
   }
 });
 
 chrome.tabs.onActivated.addListener (function (activeInfo) {
-  chrome.tabs.get(activeInfo.tabId, updateBadge)
+  // console.log("Active", activeInfo.tabId);
+  updateBadge(activeInfo.tabId);
 
 });
 
-
+chrome.tabs.onRemoved.addListener(function (tabId) {
+   removeBlockingStatus(tabId);
+});
 
 /**************************** Messaging ******************************/
 
@@ -75,9 +80,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         } else {
 
             checkSearchEngines(sender.tab, request.location, callback);
-            // otherwise check with china servers
-            checkPage(sender.tab, request.location.href, callback);
-
+            checkServer(sender.tab, request.location.href, callback);
+            //TODO: search pages got checked twice XX
         }
    })
     
@@ -137,8 +141,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
 function keysValues(href) {
 
-  var vars = [],
-    hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
+  var vars = [], hashes;
+    
+  if(href) hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
 
   for (var i = 0; i < hashes.length; i++) {
     var hash = hashes[i].split('=');
@@ -161,6 +166,7 @@ function getSearchKeywordFromURL(url) {
 
     return result;
 }
+
 var getHostNameFromURL = function(url) {
     if(typeof url != "string") return null;
     var matches = url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
@@ -247,6 +253,45 @@ function removeEntryFromList(entry, list){
 
 }
 
+function setBlockingStatus(tabId, tabUrl, status) {
+    chrome.storage.local.get("tabsBlockingStatus", function(result) {
+        result = result.tabsBlockingStatus;
+        var items = {
+            tabUrl: tabUrl,
+            status: status
+        };
+        result[tabId.toString()] = items;
+        chrome.storage.local.set({ "tabsBlockingStatus": result });
+
+    });
+}
+
+function removeBlockingStatus(tabId) {
+    chrome.storage.local.get("tabsBlockingStatus", function(result) {
+        result = result.tabsBlockingStatus;
+        delete result[tabId];
+        chrome.storage.local.set({ "tabsBlockingStatus": result });
+    });
+}
+
+function getBlockingStatus(tabId, callback) {
+    //get the blocking status from record
+    chrome.storage.local.get("tabsBlockingStatus", function(result) {
+        var target = result.tabsBlockingStatus[tabId];
+        if (target !== undefined) {
+            callback(target.status);
+        } else {
+          callback(null);
+          //checkpage?
+        }
+    });
+
+}
+
+function clearBlockingStatus() {
+    chrome.storage.local.set({"tabsBlockingStatus": {}});
+}
+
 var setIcon = function(tabId, iconStatus) {
    
     if ( tabId === 0 ) {
@@ -265,7 +310,7 @@ var setIcon = function(tabId, iconStatus) {
     var iconPaths;
 
     switch(iconStatus) {
-        case 'blocked':
+        case 'block':
             iconPaths = { '16': 'img/blocked16.png', '32': 'img/blocked32.png'};
             break;
         case 'disabled':
@@ -274,27 +319,21 @@ var setIcon = function(tabId, iconStatus) {
         default://on
             iconPaths = { '16': 'img/icon16.png', '32': 'img/icon32.png'};
     }
-    console.log("Set Icon:", tabId, iconStatus);
     chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
 }
 
-var updateBadge = function(tab) {
-    checkBlockingStatus(tab.id, function(result) {
-        setIcon(tab.id, result.status);
+var updateBadge = function(tabId) {
 
-    })
+    getBlockingStatus(tabId, function(result){
+      setIcon(tabId, result);
+    });
+
 }
 
 /**************************** core ******************************/
-var checkBlockingStatus = function (tabId) {
-  //TODO: Store the blocking status of each tabId?
-  var result = {
-    status : "allow"
-  }
-  return result;
-}
 
-var checkPage = function (tab, url, callback) {
+
+var checkServer = function (tab, url, callback) {
 
   //chrome newtab
   if (url && url.indexOf("/chrome/newtab?") != -1) 
@@ -305,8 +344,8 @@ var checkPage = function (tab, url, callback) {
    var onSuccess = function(data) {
        var result = parseResults(data);
        result['redact'] = isRedact;
+       setBlockingStatus(tab.id, url, result.status);
        setIcon(tab.id, result.status);
-
        return result;
 
    }
@@ -342,6 +381,10 @@ var checkSearchEngines = function(tab, location, callback) {
             if (keyword === trigger) {
 
                 logs && console.log('block: ' + keyword);
+                
+              
+                setBlockingStatus(tab.id, location.href, "block");
+
 
                 callback({
                     status: 'block',
@@ -349,9 +392,9 @@ var checkSearchEngines = function(tab, location, callback) {
                     redact: isRedact
                 });
 
-                setIcon(tab.id, "blocked");
+                setIcon(tab.id, "block");
 
-                return; // got one, we're done
+                return true; // got one, we're done
             }
         }
     }
