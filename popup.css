@@ -1,7 +1,7 @@
 body {
   background-color: white;
-  color: #555;
-  width:360px;
+  color: #333;
+  width:330px;
   margin:20px;
   min-height:150px;
 }
@@ -31,12 +31,13 @@ ul{
 ul li{
     list-style-type: none;
     font-size: 16px;
-    line-height: 20px;
-    margin:5px 0;
+    line-height: 18px;
+    margin:8px 0;
 }
 ul li .status{
   font-size: 14px;
   background-color: gray;
+  text-transform: uppercase;
   float:right;
   color:white;
   padding:0 5px;
@@ -45,7 +46,7 @@ ul li .status{
 ul li .fail {
   background-color: black;
 }
-ul li .pass {
+ul li .ok {
   background-color: green;
 }
 .serverResult p {
@@ -84,12 +85,12 @@ button:disabled {
 button:hover:enabled,button.modeButtons:disabled,.active{
   background-color: black;
   color: white;
-  border-color: black;
+  border-color: #333;
 }
 button, button.modeButtons.enabled:disabled{
   background-color: white;
-  color:black;
-  border-color: black;
+  color:#333;
+  border-color: #333;
 }
 
 a:focus, button:focus {

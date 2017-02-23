@@ -1,3 +1,5 @@
+var ALLPASS = "All servers were able to reach your site. This means that your site should be accessible from within mainland China.";
+
 $(document).ready(function() {
 
     chrome.tabs.query({
@@ -21,6 +23,7 @@ $(document).ready(function() {
             tabId: currentPageTabId
           }, function(res){
             updateButtons(currentPageUrl, res);
+            displayServerInfo(res);
           });
 
         //button clicks
@@ -65,8 +68,27 @@ $(document).ready(function() {
 
 });
 
-function updateButtons(tabUrl, status) {
+function displayServerInfo(res) {
+  
+    if (res.status === "block" && res.servers === undefined) {
+        $(".response .status").toggleClass("ok").text("ok");
+        $("p.info").text(ALLPASS);
+    } else {
+       
+        var count = 0;
+        for (place in res.servers) {
+            var placeId = place.replace(" ", "_");
+          
+            $(".response#" + placeId + " .status").toggleClass(res.servers[place]);
+            $(".response#" + placeId + " .status").text(res.servers[place]);
+        }
 
+        $("p.info").text(res.info);
+
+    }
+}
+
+function updateButtons(tabUrl, status) {
   var infoMode;
 
       /*if the page is blocked, button is set to default text(disable site/search)

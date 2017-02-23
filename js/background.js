@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
             // console.log("disabled");
 
-            setBlockingStatus(sender.tab.id, request.location.href,"disabled");
+            setBlockingStatus(sender.tab.id, request.location.href,{status: 'disabled'});
 
             callback && callback({
                 status: 'disabled'
@@ -80,10 +80,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             return;
 
         } else {
-
             checkPage(sender.tab, request.location, callback);
-            //TODO: search pages got checked twice XX
-        }
    })
     
 
@@ -266,10 +263,8 @@ function removeEntryFromList(entry, list){
 function setBlockingStatus(tabId, tabUrl, status) {
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
         result = result.tabsBlockingStatus;
-        var items = {
-            tabUrl: tabUrl,
-            status: status
-        };
+        var items = status;
+        items["tabUrl"] = tabUrl;
         result[tabId.toString()] = items;
         chrome.storage.local.set({ "tabsBlockingStatus": result });
 
@@ -289,10 +284,10 @@ function getBlockingStatus(tabId, callback) {
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
         var target = result.tabsBlockingStatus[tabId];
         if (target !== undefined) {
-            callback(target.status);
+            callback(target);
         } else {
           callback(null);
-          //checkpage?
+          //TODO: checkpage
         }
     });
 
@@ -337,7 +332,7 @@ var setIcon = function(tabId, iconStatus) {
 var updateBadge = function(tabId) {
 
     getBlockingStatus(tabId, function(result){
-      setIcon(tabId, result);
+      if(result) setIcon(tabId, result.status);
     });
 
 }
@@ -356,7 +351,7 @@ var checkServer = function (tab, url, callback) {
    var onSuccess = function(data) {
        var result = parseResults(data);
        result['redact'] = isRedact;
-       setBlockingStatus(tab.id, url, result.status);
+       setBlockingStatus(tab.id, url, result);
        setIcon(tab.id, result.status);
        return result;
 
@@ -394,7 +389,7 @@ var checkPage = function(tab, location, callback) {
                 logs && console.log('block: ' + keyword);
                 
               
-                setBlockingStatus(tab.id, location.href, "block");
+                setBlockingStatus(tab.id, location.href, {status: 'block'});
                 setIcon(tab.id, "block");
 
                 callback({
@@ -426,14 +421,17 @@ var parseResults = function (html) {
   locs = $(html).find('.resultlocation');
   vals = $(html).find('.resultstatus');
 
+  result.servers = {};
+
   for (var i = 0; i < locs.length; i++) {
 
     var value = $(vals[i]).text().toLowerCase();
-    result[$(locs[i]).text().toLowerCase()] = value;
+    result.servers[$(locs[i]).text().toLowerCase()] = value;
     if (value === 'fail') fails++;
   }
 
   result.status = fails > 2 ? 'block' : 'allow';
+  result.info = $(html).find(".uitleg td").text();
 
   logs && console.log('result:', locs.length, vals.length, result);
 
