@@ -79,8 +79,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
         } else {
 
-            checkSearchEngines(sender.tab, request.location, callback);
-            checkServer(sender.tab, request.location.href, callback);
+            checkPage(sender.tab, request.location, callback);
             //TODO: search pages got checked twice XX
         }
    })
@@ -364,10 +363,9 @@ var checkServer = function (tab, url, callback) {
   });
 }
 
-var checkSearchEngines = function(tab, location, callback) {
+var checkPage = function(tab, location, callback) {
 
-   if(!hostRegex.test(location.host))
-     return;
+   if (hostRegex.test(location.host)) {
 
     var keyword = getSearchKeywordFromURL(location.href);
 
@@ -398,6 +396,10 @@ var checkSearchEngines = function(tab, location, callback) {
             }
         }
     }
+  }
+    
+    //Otherwise
+  checkServer(tab, location.href, callback);
 
 }
 
