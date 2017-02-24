@@ -1,3 +1,5 @@
+var ALLPASS = "All servers were able to reach your site. This means that your site should be accessible from within mainland China.";
+
 $(document).ready(function() {
 
     chrome.tabs.query({
@@ -6,7 +8,7 @@ $(document).ready(function() {
         currentWindow: true
 
     }, function(tabs) {
-        var currentPageUrl = tabs[0].url;
+        var currentPageUrl = tabs[0].url, currentPageTabId = tabs[0].id;
        
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
@@ -14,12 +16,15 @@ $(document).ready(function() {
           return;
         }
             
-        // ask content-script if we are active
-        chrome.tabs.sendMessage(tabs[0].id, {
-            what: 'isActive',
-        }, function(res) {
-            updateButtons(currentPageUrl, res && res.active);
-        });
+        //ask background about the blockingstatus
+        
+        chrome.runtime.sendMessage({
+            what: "getBlockingStatus",
+            tabId: currentPageTabId
+          }, function(res){
+            updateButtons(currentPageUrl, res);
+            displayServerInfo(res);
+          });
 
         //button clicks
         $(".whitelistButtons").click(function() {
@@ -27,8 +32,7 @@ $(document).ready(function() {
           var message = $(this).hasClass("resume") ? "resume" : "disable";
            message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
            
-          console.log(message, currentPageUrl);
-
+          // console.log(message, currentPageUrl);
 
           chrome.runtime.sendMessage({
             what: message,
@@ -50,9 +54,12 @@ $(document).ready(function() {
            $(".modeButtons:disabled").prop('disabled', false);
            $(this).prop('disabled', true);
 
-
           window.close();
 
+        })
+
+        $(".modeButtons:enabled").hover(function() {
+           $(".modeButtons:disabled").toggleClass("enabled");
         })
 
 
@@ -60,10 +67,31 @@ $(document).ready(function() {
 
 });
 
-function updateButtons(tabUrl, active) {
+function displayServerInfo(res) {
+  
+    if (res.status === "block" && res.servers === undefined) {
+        $(".response .status").toggleClass("ok").text("ok");
+        $("p.info").text(ALLPASS);
+    } else {
+       
+        var count = 0;
+        for (place in res.servers) {
+            var placeId = place.replace(" ", "_");
+          
+            $(".response#" + placeId + " .status").toggleClass(res.servers[place]);
+            $(".response#" + placeId + " .status").text(res.servers[place]);
+        }
 
-      /*if we are active, button is set to default text(disable site/search)
-      if we are not active, check whether if page is in disabled list
+        $("p.info").text(res.info);
+
+    }
+}
+
+function updateButtons(tabUrl, status) {
+  var infoMode;
+
+      /*if the page is blocked, button is set to default text(disable site/search)
+      if not, check whether if page is in disabled list
           if yes, button:resume on this Page
           if not, disable the button*/
 
@@ -77,32 +105,31 @@ function updateButtons(tabUrl, active) {
          if (res) $('#disableSearch_button').show();
      });
 
+  // console.log("Status?", status);
 
-  if (active) {
+  if (status === "block") {
 
     $('#redactMode_button').prop('disabled', true);
 
   } else {
-
    
     chrome.runtime.sendMessage({
          what: "isRedact",
      }, function(res) {
-      console.log(res);
-        $('#infoMode_button').prop('disabled', !res);
+        // console.log(res);
+        infoMode = !res;
+        $('#infoMode_button').prop('disabled', infoMode);
         $('#redactMode_button').prop('disabled', res);
      });
-
-
+   
     chrome.runtime.sendMessage({
       what: "isOnWhiteList",
       url: tabUrl
     }, function (res) {
-      console.log("isOnWhiteList? ", res);
+      // console.log("isOnWhiteList? ", res.status, infoMode);
       if (res && res.status == 'disabled') {
         //change the button text 
-        console.log("change button text");
-
+        // console.log("change button text");
         if(res.lists.indexOf("whiteListedSites") !== -1) {
           $('#disableSite_button').text("Resume for this site");//change i18n class in the future
           $('#disableSite_button').addClass("resume");
@@ -114,8 +141,8 @@ function updateButtons(tabUrl, active) {
         } 
 
       } else {
-
-         $('#disableSite_button').prop('disabled', true);
+         // console.log("disable button");
+         $('.whitelistButtons').prop('disabled', true);
 
       }    
 
