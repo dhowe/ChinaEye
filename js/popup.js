@@ -89,7 +89,7 @@ function displayServerInfo(res) {
 
 function updateButtons(tabUrl, status) {
 
-    console.log(status);
+    // console.log(status);
     status = status.status;
     
     /****************************
