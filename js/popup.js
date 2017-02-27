@@ -76,10 +76,16 @@ function displayServerInfo(res) {
        
         var count = 0;
         for (place in res.servers) {
-            var placeId = place.replace(" ", "_");
+            var placeId = place.replace(" ", "_"),
+                result = res.servers[place];
+
+            $(".response#" + placeId + " .status").text(result);
           
-            $(".response#" + placeId + " .status").toggleClass(res.servers[place]);
-            $(".response#" + placeId + " .status").text(res.servers[place]);
+           
+            if(result === "ok" || result === "fail")
+               $(".response#" + placeId + " .status").toggleClass(result);
+            else if( result.length > 0)
+               $(".response#" + placeId + " .status").toggleClass("yellow");
         }
 
         $("p.info").text(res.info);
