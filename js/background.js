@@ -124,8 +124,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   } else if (request.what === "getBlockingStatus") {
 
     getBlockingStatus(request.tabId, request.url, function(result){
-      // console.log("getBlockingStatus", request.tabId, result);
-      callback(result);
+      // console.log(request.url === result.tabUrl, request.url, result.tabUrl);
+      if(request.url === result.tabUrl) callback(result);
     });
 
   } else if (request.what === "isRedact") {
@@ -282,6 +282,7 @@ function removeBlockingStatus(tabId) {
 function getBlockingStatus(tabId, tabUrl, callback) {
     //get the blocking status from record
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
+
         var target = result.tabsBlockingStatus[tabId];
         if (target !== undefined) {
             callback(target);

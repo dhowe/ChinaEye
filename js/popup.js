@@ -13,6 +13,7 @@ $(document).ready(function() {
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
           updateButtons(0, 0);
+          $('.serverResult').hide();
           return;
         }
             
@@ -20,10 +21,13 @@ $(document).ready(function() {
         
         chrome.runtime.sendMessage({
             what: "getBlockingStatus",
-            tabId: currentPageTabId
+            tabId: currentPageTabId,
+            url: currentPageUrl
           }, function(res){
-            updateButtons(currentPageUrl, res);
+            console.log(res);
             displayServerInfo(res);
+            updateButtons(currentPageUrl, res);
+           
           });
 
         //button clicks
@@ -95,16 +99,13 @@ function displayServerInfo(res) {
 
 function updateButtons(tabUrl, status) {
 
-    // console.log(status);
-    status = status.status;
+   
     
-    /****************************
-    No.0 :
-    hide server result on browser pages
-    ****************************/
-    if (status === undefined)
-      $('.serverResult').hide();
 
+
+    
+    if(status) status = status.status;
+    console.log(status);
 
     /****************************
     No.1 :
