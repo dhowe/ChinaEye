@@ -12,16 +12,21 @@ body {
 
 }
 img {
- 
+ margin-bottom: 1em;
 }
 /*server info*/
 .serverResult {
   text-align: left;
-  margin:15px 5px;
+  margin:15px 5px -10px;
   padding-bottom: 5px;
-  border-bottom: solid;
+}
+.buttons{
+  margin-top:10px;
+  padding-top: 7px;
+  border-top: solid;
   border-color:#DDD;
   border-width: 1px;
+
 }
 ul{
   -webkit-margin-before:0px;
@@ -48,6 +53,9 @@ ul li .fail {
 }
 ul li .ok {
   background-color: green;
+}
+ul li .yellow {
+  background-color: yellow;
 }
 .serverResult p {
   color:gray;

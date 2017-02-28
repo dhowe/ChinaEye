@@ -13,6 +13,7 @@ $(document).ready(function() {
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
           updateButtons(0, 0);
+          $('.serverResult').hide();
           return;
         }
             
@@ -20,10 +21,13 @@ $(document).ready(function() {
         
         chrome.runtime.sendMessage({
             what: "getBlockingStatus",
-            tabId: currentPageTabId
+            tabId: currentPageTabId,
+            url: currentPageUrl
           }, function(res){
-            updateButtons(currentPageUrl, res);
+            console.log(res);
             displayServerInfo(res);
+            updateButtons(currentPageUrl, res);
+           
           });
 
         //button clicks
@@ -76,10 +80,16 @@ function displayServerInfo(res) {
        
         var count = 0;
         for (place in res.servers) {
-            var placeId = place.replace(" ", "_");
+            var placeId = place.replace(" ", "_"),
+                result = res.servers[place];
+
+            $(".response#" + placeId + " .status").text(result);
           
-            $(".response#" + placeId + " .status").toggleClass(res.servers[place]);
-            $(".response#" + placeId + " .status").text(res.servers[place]);
+           
+            if(result === "ok" || result === "fail")
+               $(".response#" + placeId + " .status").toggleClass(result);
+            else if( result.length > 0)
+               $(".response#" + placeId + " .status").toggleClass("yellow");
         }
 
         $("p.info").text(res.info);
@@ -88,66 +98,95 @@ function displayServerInfo(res) {
 }
 
 function updateButtons(tabUrl, status) {
-  var infoMode;
 
-      /*if the page is blocked, button is set to default text(disable site/search)
-      if not, check whether if page is in disabled list
-          if yes, button:resume on this Page
-          if not, disable the button*/
-
-     //if we are blocking the page && it is from a search engine
-     //show disable search button
-
-     chrome.runtime.sendMessage({
-         what: "isOnSearchResultPage",
-         url: tabUrl
-     }, function(res) {
-         if (res) $('#disableSearch_button').show();
-     });
-
-  // console.log("Status?", status);
-
-  if (status === "block") {
-
-    $('#redactMode_button').prop('disabled', true);
-
-  } else {
    
+    
+
+
+    
+    if(status) status = status.status;
+    console.log(status);
+
+    /****************************
+    No.1 :
+    ask background page, 
+    whether the page is on Redact or Info Mode
+    ****************************/
+
     chrome.runtime.sendMessage({
-         what: "isRedact",
-     }, function(res) {
+        what: "isRedact",
+    }, function(res) {
         // console.log(res);
-        infoMode = !res;
+        var infoMode = !res;
         $('#infoMode_button').prop('disabled', infoMode);
         $('#redactMode_button').prop('disabled', res);
-     });
-   
-    chrome.runtime.sendMessage({
-      what: "isOnWhiteList",
-      url: tabUrl
-    }, function (res) {
-      // console.log("isOnWhiteList? ", res.status, infoMode);
-      if (res && res.status == 'disabled') {
-        //change the button text 
-        // console.log("change button text");
-        if(res.lists.indexOf("whiteListedSites") !== -1) {
-          $('#disableSite_button').text("Resume for this site");//change i18n class in the future
-          $('#disableSite_button').addClass("resume");
-        }
-
-        if(res.lists.indexOf("whiteListedSearches") !== -1 &&  $('#disableSearch_button').css('display') !== 'none'){
-          $('#disableSearch_button').text("Resume for this search");
-          $('#disableSearch_button').addClass("resume");
-        } 
-
-      } else {
-         // console.log("disable button");
-         $('.whitelistButtons').prop('disabled', true);
-
-      }    
-
     });
-  }
+
+  
+    /****************************
+    No.2 :
+    if the page is blocked/disabled
+    check whether it is on search Engine, 
+    if yes, show disableSearch button
+    ****************************/
+    if (status != "allow") {
+       //disable or block
+        chrome.runtime.sendMessage({
+            what: "isOnSearchResultPage",
+            url: tabUrl
+        }, function(res) {
+            if (res) $('#disableSearch_button').show();
+        });
+    }
+
+    /****************************
+     No.3 :
+      if the page is disabled,
+     check the exact whitelist:
+         if it is on whiteListedSites 
+           -> change the button text to "Resume for this site"
+         if it is on whitelistedSearches 
+           -> change the button text to "Resume for this search"
+     ****************************/
+
+    if (status === "disabled") {
+
+        chrome.runtime.sendMessage({
+            what: "isOnWhiteList",
+            url: tabUrl
+        }, function(whitelist) {
+            // console.log("isOnWhiteList? ", whitelist);
+            if (whitelist && whitelist.status == 'disabled') {
+                //change the button text 
+                // console.log("change button text");
+                if (whitelist.lists.indexOf("whiteListedSites") !== -1) {
+                    $('#disableSite_button').text("Resume for this site"); //change i18n class in the future
+                    $('#disableSite_button').addClass("resume");
+                }
+
+                if (whitelist.lists.indexOf("whiteListedSearches") !== -1 && $('#disableSearch_button').css('display') !== 'none') {
+                    $('#disableSearch_button').text("Resume for this search");
+                    $('#disableSearch_button').addClass("resume");
+                }
+
+            } else {
+               
+                if (status.status == 'allow')
+                    $('.whitelistButtons').prop('disabled', true);
+
+            }
+
+        });
+    } else if( status === "allowed" || status === undefined){
+
+        /****************************
+         No.4 :
+         if the page is allowed/undefined
+         disable "disable site" button
+        ****************************/
+
+        $('.whitelistButtons').prop('disabled', true);
+    }
 }
 
 
