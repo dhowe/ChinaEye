@@ -109,13 +109,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     processButton(request.url);
 
     // and reload (will trigger content-script and be ignored)
+
     chrome.tabs.reload(request.tabId);
 
   } else if (request.what === "setRedact") {
     
     isRedact = request.value;
-    //update content script
-    chrome.tabs.reload(request.tabId);
+    //Reload all tabs
+    reloadAllTabs();
+    // chrome.tabs.reload(request.tabId);
 
   } else if (request.what === "isOnWhiteList") {
 
@@ -145,6 +147,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 });
 
 /**************************** functions ******************************/
+
+function reloadAllTabs() {
+    chrome.tabs.query({
+        currentWindow: true
+    }, function(result) {
+
+        for (var key in result) {
+            var tab = result[key];
+            if (tab.url != undefined) chrome.tabs.reload(tab.id);
+        }
+
+    });
+
+}
 
 function keysValues(href) {
 
