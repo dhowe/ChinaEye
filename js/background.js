@@ -53,7 +53,7 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  // console.log(request);
+  // console.log("Request: " + request.what);
 
   if (request.what === "checkPage") {
 

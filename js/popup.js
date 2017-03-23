@@ -10,6 +10,8 @@ $(document).ready(function() {
     }, function(tabs) {
         var currentPageUrl = tabs[0].url, currentPageTabId = tabs[0].id;
        
+        updateMode();
+
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
           updateButtons(0, 0);
@@ -18,16 +20,16 @@ $(document).ready(function() {
         }
             
         //ask background about the blockingstatus
-        
+        //might takes a long time if blockingstatus doesn't already exist
+
         chrome.runtime.sendMessage({
             what: "getBlockingStatus",
             tabId: currentPageTabId,
             url: currentPageUrl
           }, function(res){
             // console.log(res);
-            displayServerInfo(res);
             updateButtons(currentPageUrl, res);
-           
+            displayServerInfo(res);
           });
 
         //button clicks
@@ -102,15 +104,7 @@ function displayServerInfo(res) {
     $("p.info").text(res.info);
 }
 
-function updateButtons(tabUrl, status) {
-
-   
-    
-
-
-    
-    if(status) status = status.status;
-
+function updateMode() {
     /****************************
     No.1 :
     ask background page, 
@@ -126,7 +120,12 @@ function updateButtons(tabUrl, status) {
         $('#redactMode_button').prop('disabled', res);
     });
 
-  
+}
+
+function updateButtons(tabUrl, status) {
+    
+    if(status) status = status.status;
+
     /****************************
     No.2 :
     if the page is blocked/disabled
