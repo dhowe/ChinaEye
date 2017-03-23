@@ -24,7 +24,7 @@ $(document).ready(function() {
             tabId: currentPageTabId,
             url: currentPageUrl
           }, function(res){
-            console.log(res);
+            // console.log(res);
             displayServerInfo(res);
             updateButtons(currentPageUrl, res);
            
@@ -72,29 +72,34 @@ $(document).ready(function() {
 });
 
 function displayServerInfo(res) {
-  
+    if (res === undefined)
+      return;
+    if(res && res.status === undefined) {
+       //error
+       $('ul').hide();
+    }
     if (res.status === "block" && res.servers === undefined) {
+        //blocked by searchkeyword
         $(".response .status").toggleClass("ok").text("ok");
         $("p.info").text(ALLPASS);
     } else {
-       
         var count = 0;
-        for (place in res.servers) {
-            var placeId = place.replace(" ", "_"),
-                result = res.servers[place];
+        if (res.servers != undefined) {
+            for (place in res.servers) {
+                var placeId = place.replace(" ", "_"),
+                    result = res.servers[place];
 
-            $(".response#" + placeId + " .status").text(result);
-          
-           
-            if(result === "ok" || result === "fail")
-               $(".response#" + placeId + " .status").toggleClass(result);
-            else if( result.length > 0)
-               $(".response#" + placeId + " .status").toggleClass("yellow");
+                $(".response#" + placeId + " .status").text(result);
+
+                if (result === "ok" || result === "fail")
+                    $(".response#" + placeId + " .status").toggleClass(result);
+                else if (result.length > 0)
+                    $(".response#" + placeId + " .status").toggleClass("yellow");
+            }
         }
-
-        $("p.info").text(res.info);
-
     }
+
+    $("p.info").text(res.info);
 }
 
 function updateButtons(tabUrl, status) {
@@ -105,7 +110,6 @@ function updateButtons(tabUrl, status) {
 
     
     if(status) status = status.status;
-    console.log(status);
 
     /****************************
     No.1 :
