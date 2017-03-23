@@ -53,7 +53,7 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  // console.log(request);
+  // console.log("Request: " + request.what);
 
   if (request.what === "checkPage") {
 
@@ -298,7 +298,6 @@ function removeBlockingStatus(tabId) {
 function getBlockingStatus(tabId, tabUrl, callback) {
     //get the blocking status from record
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
-
         var target = result.tabsBlockingStatus[tabId];
         if (target !== undefined) {
             callback(target);
@@ -360,7 +359,7 @@ var updateBadge = function(tabId) {
 /**************************** core ******************************/
 
 
-var checkServer = function (tab, url, callback) {
+var checkServer = function (tab, url, count, callback) {
 
   //chrome newtab
   if (url && url.indexOf("/chrome/newtab?") != -1) 
@@ -379,7 +378,19 @@ var checkServer = function (tab, url, callback) {
 
   $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
-      callback(onSuccess(data));
+      if(data.indexOf("An error occured - please try again later.")> -1) {
+        // console.log(data);
+        if( count === 0 && url && url.startsWith("https")) {
+          var newurl = url.replace("https", "http");
+          logs && console.log("Retry with url:" + newurl);
+          checkServer(tab, newurl, 1 ,callback);
+
+        }
+        
+      } else {
+        callback(onSuccess(data));
+      }
+      
     },
     error: function (e) {
       callback({
@@ -429,7 +440,7 @@ var checkPage = function(tab, location, callback) {
   }
     
     //Otherwise
-  checkServer(tab, url, callback);
+  checkServer(tab, url, 0, callback);
 
 }
 
@@ -443,6 +454,18 @@ var parseResults = function (html) {
   locs = $(html).find('.resultlocation');
   vals = $(html).find('.resultstatus');
 
+  if (locs.length === 0  && vals.length === 0) {
+    //check whether it is an error message
+    var container = $(html).find('#contentContainer div');
+    if ($(container[0]).text().indexOf("error") > -1){
+
+      result.info = "An error occured - please try again later.";
+    }
+      
+    return result;
+  }
+
+  
   result.servers = {};
 
   for (var i = 0; i < locs.length; i++) {
@@ -454,6 +477,7 @@ var parseResults = function (html) {
 
   result.status = fails > 2 ? 'block' : 'allow';
   result.info = $(html).find(".uitleg td").text();
+
 
   logs && console.log('result:', locs.length, vals.length, result);
 

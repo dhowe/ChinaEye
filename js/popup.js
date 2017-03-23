@@ -10,6 +10,8 @@ $(document).ready(function() {
     }, function(tabs) {
         var currentPageUrl = tabs[0].url, currentPageTabId = tabs[0].id;
        
+        updateMode();
+
         // ignore chrome urls
         if (/^chrome:/.test(currentPageUrl)) {
           updateButtons(0, 0);
@@ -18,16 +20,16 @@ $(document).ready(function() {
         }
             
         //ask background about the blockingstatus
-        
+        //might takes a long time if blockingstatus doesn't already exist
+
         chrome.runtime.sendMessage({
             what: "getBlockingStatus",
             tabId: currentPageTabId,
             url: currentPageUrl
           }, function(res){
-            console.log(res);
-            displayServerInfo(res);
+            // console.log(res);
             updateButtons(currentPageUrl, res);
-           
+            displayServerInfo(res);
           });
 
         //button clicks
@@ -72,41 +74,37 @@ $(document).ready(function() {
 });
 
 function displayServerInfo(res) {
-  
+    if (res === undefined)
+      return;
+    if(res && res.status === undefined) {
+       //error
+       $('ul').hide();
+    }
     if (res.status === "block" && res.servers === undefined) {
+        //blocked by searchkeyword
         $(".response .status").toggleClass("ok").text("ok");
         $("p.info").text(ALLPASS);
     } else {
-       
         var count = 0;
-        for (place in res.servers) {
-            var placeId = place.replace(" ", "_"),
-                result = res.servers[place];
+        if (res.servers != undefined) {
+            for (place in res.servers) {
+                var placeId = place.replace(" ", "_"),
+                    result = res.servers[place];
 
-            $(".response#" + placeId + " .status").text(result);
-          
-           
-            if(result === "ok" || result === "fail")
-               $(".response#" + placeId + " .status").toggleClass(result);
-            else if( result.length > 0)
-               $(".response#" + placeId + " .status").toggleClass("yellow");
+                $(".response#" + placeId + " .status").text(result);
+
+                if (result === "ok" || result === "fail")
+                    $(".response#" + placeId + " .status").toggleClass(result);
+                else if (result.length > 0)
+                    $(".response#" + placeId + " .status").toggleClass("yellow");
+            }
         }
-
-        $("p.info").text(res.info);
-
     }
+
+    $("p.info").text(res.info);
 }
 
-function updateButtons(tabUrl, status) {
-
-   
-    
-
-
-    
-    if(status) status = status.status;
-    console.log(status);
-
+function updateMode() {
     /****************************
     No.1 :
     ask background page, 
@@ -122,7 +120,12 @@ function updateButtons(tabUrl, status) {
         $('#redactMode_button').prop('disabled', res);
     });
 
-  
+}
+
+function updateButtons(tabUrl, status) {
+    
+    if(status) status = status.status;
+
     /****************************
     No.2 :
     if the page is blocked/disabled
