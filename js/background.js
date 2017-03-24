@@ -75,7 +75,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
         // console.log("disabled");
 
-        setBlockingStatus(sender.tab.id, request.location.href, {
+        setBlockingStatus(sender.tab.id, request.location.href, request.location.host, {
           status: 'disabled'
         });
 
@@ -131,8 +131,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   } else if (request.what === "getBlockingStatus") {
 
     getBlockingStatus(request.tabId, request.url, function (result) {
-      // console.log(request.url === result.tabUrl, request.url, result.tabUrl);
-      if (result != undefined && normalizeUrl(request.url) === normalizeUrl(result.tabUrl)) callback(result);
+      if (result != undefined && request.location.host === result.host) callback(result);
     });
 
   } else if (request.what === "isRedact") {
@@ -288,12 +287,13 @@ function removeEntryFromList(entry, list) {
 
 }
 
-function setBlockingStatus(tabId, tabUrl, status) {
-  logs && console.log("setBlockingStatus", tabId, tabUrl, status);
+function setBlockingStatus(tabId, tabUrl, host, status) {
+  logs && console.log("setBlockingStatus", tabId, tabUrl, host, status);
   chrome.storage.local.get("tabsBlockingStatus", function (result) {
     result = result.tabsBlockingStatus;
     var items = status;
     items["tabUrl"] = tabUrl;
+    items["host"] = host;
     result[tabId.toString()] = items;
     chrome.storage.local.set({
       "tabsBlockingStatus": result
@@ -391,14 +391,14 @@ var updateBadge = function (tabId) {
 
 /**************************** core ******************************/
 
-var checkServer = function (tab, url, count, callback) {
+var checkServer = function (tab, url, host, count, callback) {
 
   var handleResult = function (result) {
 
-    Cache.set(url, result, cacheTimeout);
+    Cache.set(host, result, cacheTimeout);
 
     result['redact'] = isRedact;
-    setBlockingStatus(tab.id, url, result);
+    setBlockingStatus(tab.id, url, host, result);
     setIcon(tab.id, result.status);
     return result;
   }
@@ -421,14 +421,13 @@ var checkServer = function (tab, url, count, callback) {
 
   logs && console.log('checkPage(server):', url);
 
-  $.ajax(gfw + '/index.php?siteurl=' + url, {
+  $.ajax(gfw + '/index.php?siteurl=' + host, {
     success: function (data) {
       if (data.indexOf("An error occured - please try again later.") > -1) {
         // console.log(data);
-        if (count === 0 && url && url.startsWith("https")) {
-          var newurl = url.replace("https", "http");
-          logs && console.log("Retry with url:" + newurl);
-          checkServer(tab, newurl, 1, callback);
+        if (count === 0) {
+          logs && console.log("An error occured, Retry");
+          checkServer(tab, host, 1, callback);
         }
 
       } else {
@@ -466,7 +465,7 @@ var checkPage = function (tab, location, callback) {
 
           logs && console.log('block: ' + keyword);
 
-          setBlockingStatus(tab.id, url, {
+          setBlockingStatus(tab.id, url, host, {
             status: 'block',
             trigger: keyword
           });
@@ -485,7 +484,7 @@ var checkPage = function (tab, location, callback) {
     }
   }
 
-  checkServer(tab, url, 0, callback);
+  checkServer(tab, host, 0, callback);
 }
 
 var parseResults = function (html) {
