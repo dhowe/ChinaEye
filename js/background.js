@@ -131,7 +131,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   } else if (request.what === "getBlockingStatus") {
 
     getBlockingStatus(request.tabId, request.url, function (result) {
-      if (result != undefined && request.location.host === result.host) callback(result);
+      if (result != undefined && getHostNameFromURL(request.url) === result.host) callback(result);
     });
 
   } else if (request.what === "isRedact") {
@@ -427,7 +427,7 @@ var checkServer = function (tab, url, host, count, callback) {
         // console.log(data);
         if (count === 0) {
           logs && console.log("An error occured, Retry");
-          checkServer(tab, host, 1, callback);
+          checkServer(tab, url, host, 1, callback);
         }
 
       } else {
@@ -484,7 +484,7 @@ var checkPage = function (tab, location, callback) {
     }
   }
 
-  checkServer(tab, host, 0, callback);
+  checkServer(tab, url, host, 0, callback);
 }
 
 var parseResults = function (html) {
