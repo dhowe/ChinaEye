@@ -1,4 +1,4 @@
-var logs = 1,
+var logs = 0,
   disabled = {},
   isRedact = true;
 
@@ -402,7 +402,6 @@ var updateBadge = function (tabId) {
   //add time out for setBlcokingStatus when Page is refreshed
   setTimeout(function() {
       getBlockingStatus(tabId, "", function(result) {
-          console.log(result);
           if (result) setIcon(tabId, result.status, "updateBadge");
       });
   }, 500);
