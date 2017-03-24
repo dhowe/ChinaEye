@@ -53,7 +53,7 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  // console.log("Request: " + request.what);
+  logs && console.log("Request: " + request.what);
 
   if (request.what === "checkPage") {
 
@@ -127,7 +127,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     getBlockingStatus(request.tabId, request.url, function(result){
       // console.log(request.url === result.tabUrl, request.url, result.tabUrl);
-      if(request.url === result.tabUrl) callback(result);
+      if (result != undefined && normalizeUrl(request.url) === normalizeUrl(result.tabUrl)) callback(result);
     });
 
   } else if (request.what === "isRedact") {
@@ -147,6 +147,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 });
 
 /**************************** functions ******************************/
+
+function normalizeUrl(url) {
+  //remove protocal
+  if (url === undefined) return undefined;
+
+  result = url.replace(/(^\w+:|^)\/\//, '');
+  return result;
+}
 
 function reloadAllTabs() {
     chrome.tabs.query({
@@ -277,6 +285,7 @@ function removeEntryFromList(entry, list){
 }
 
 function setBlockingStatus(tabId, tabUrl, status) {
+    logs && console.log("setBlockingStatus", tabId, tabUrl, status);
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
         result = result.tabsBlockingStatus;
         var items = status;
@@ -378,13 +387,12 @@ var checkServer = function (tab, url, count, callback) {
 
   $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
-      if(data.indexOf("An error occured - please try again later.")> -1) {
+      if (data.indexOf("An error occured - please try again later.")> -1) {
         // console.log(data);
-        if( count === 0 && url && url.startsWith("https")) {
+        if (count === 0 && url && url.startsWith("https")) {
           var newurl = url.replace("https", "http");
           logs && console.log("Retry with url:" + newurl);
           checkServer(tab, newurl, 1 ,callback);
-
         }
         
       } else {
@@ -422,7 +430,11 @@ var checkPage = function(tab, location, callback) {
 
                 logs && console.log('block: ' + keyword);
               
-                setBlockingStatus(tab.id, url, {status: 'block'});
+                setBlockingStatus(tab.id, url, {
+                  status: 'block',
+                  trigger: keyword
+                });
+
                 setIcon(tab.id, "block");
 
                 callback({
