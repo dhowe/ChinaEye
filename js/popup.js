@@ -11,58 +11,15 @@ $(document).ready(function() {
         var currentPageUrl = tabs[0].url, currentPageTabId = tabs[0].id;
        
         updateMode();
-
-        // ignore chrome urls
-        if (/^chrome:/.test(currentPageUrl)) {
-          updateButtons(0, 0);
-          $('.serverResult').hide();
-          return;
-        }
-            
-        //ask background about the blockingstatus
-        //might takes a long time if blockingstatus doesn't already exist
-
-        chrome.runtime.sendMessage({
-            what: "getBlockingStatus",
-            tabId: currentPageTabId,
-            url: currentPageUrl
-          }, function(res){
-            // console.log(res);
-            updateButtons(currentPageUrl, res);
-            displayServerInfo(res);
-          });
+        renderInterface(currentPageUrl, currentPageTabId);
+        
 
         //button clicks
         $(".whitelistButtons").click(function() {
+           whitelistButtonOnClick(currentPageUrl);
+        });
 
-          var message = $(this).hasClass("resume") ? "resume" : "disable";
-           message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
-           
-          // console.log(message, currentPageUrl);
-
-          chrome.runtime.sendMessage({
-            what: message,
-            url: currentPageUrl
-          });
-
-          window.close();
-
-        })
-
-        $(".modeButtons").click(function() {
-           var isRedact = $(this).attr("id") === "infoMode_button" ? false : true;
-
-          chrome.runtime.sendMessage({
-            what: "setRedact",
-            value: isRedact
-          });
-          
-           $(".modeButtons:disabled").prop('disabled', false);
-           $(this).prop('disabled', true);
-
-          window.close();
-
-        })
+        $(".modeButtons").click(modeButtonOnClick);
 
         $(".modeButtons:enabled").hover(function() {
            $(".modeButtons:disabled").toggleClass("enabled");
@@ -73,7 +30,68 @@ $(document).ready(function() {
 
 });
 
-function displayServerInfo(res) {
+function whitelistButtonOnClick(currentPageUrl) {
+    var message = $(this).hasClass("resume") ? "resume" : "disable";
+    message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
+
+    // console.log(message, currentPageUrl);
+
+    chrome.runtime.sendMessage({
+        what: message,
+        url: currentPageUrl
+    });
+
+    window.close();
+
+}
+
+function modeButtonOnClick () {
+    var isRedact = $(this).attr("id") === "infoMode_button" ? false : true;
+
+    chrome.runtime.sendMessage({
+        what: "setRedact",
+        value: isRedact
+    });
+
+    $(".modeButtons:disabled").prop('disabled', false);
+    $(this).prop('disabled', true);
+
+    window.close();
+
+}
+
+function renderInterface (currentPageUrl, currentPageTabId) {
+    // ignore chrome urls
+    if (/^chrome:/.test(currentPageUrl)) {
+      updateButtons(0, 0);
+      $('.serverResult').hide();
+      return;
+    }
+
+    //ask background about the blockingstatus
+    //might takes a long time if blockingstatus doesn't already exist
+
+    chrome.runtime.sendMessage({
+        what: "getBlockingStatus",
+        tabId: currentPageTabId,
+        url: currentPageUrl
+    }, function(res) {
+        if (res != undefined) {
+            updateButtons(currentPageUrl, res);
+            displayServerInfo(res);
+        }
+        else {
+          //ask again if res is not ready
+          // setInterval(function(){
+          //   renderInterface(currentPageUrl, currentPageTabId);
+          // }, 1000);
+
+        }
+    });
+
+}
+
+function displayServerInfo (res) {
     if (res === undefined)
       return;
     if(res && res.status === undefined) {
@@ -104,7 +122,7 @@ function displayServerInfo(res) {
     $("p.info").text(res.info);
 }
 
-function updateMode() {
+function updateMode () {
     /****************************
     No.1 :
     ask background page, 
@@ -122,7 +140,7 @@ function updateMode() {
 
 }
 
-function updateButtons(tabUrl, status) {
+function updateButtons (tabUrl, status) {
     
     if(status) status = status.status;
 

@@ -1,5 +1,5 @@
 
-var logs = false, disabled = {}, isRedact = true;
+var logs = true, disabled = {}, isRedact = true;
   gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
@@ -53,7 +53,7 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
-  // console.log("Request: " + request.what);
+  logs && console.log("Request: " + request.what);
 
   if (request.what === "checkPage") {
 
@@ -150,6 +150,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
 function normalizeUrl(url) {
   //remove protocal
+  if (url === undefined) return undefined;
+
   result = url.replace(/(^\w+:|^)\/\//, '');
   return result;
 }
@@ -283,6 +285,7 @@ function removeEntryFromList(entry, list){
 }
 
 function setBlockingStatus(tabId, tabUrl, status) {
+    logs && console.log("setBlockingStatus", tabId, tabUrl, status);
     chrome.storage.local.get("tabsBlockingStatus", function(result) {
         result = result.tabsBlockingStatus;
         var items = status;
@@ -384,13 +387,12 @@ var checkServer = function (tab, url, count, callback) {
 
   $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
-      if(data.indexOf("An error occured - please try again later.")> -1) {
+      if (data.indexOf("An error occured - please try again later.")> -1) {
         // console.log(data);
-        if( count === 0 && url && url.startsWith("https")) {
+        if (count === 0 && url && url.startsWith("https")) {
           var newurl = url.replace("https", "http");
           logs && console.log("Retry with url:" + newurl);
           checkServer(tab, newurl, 1 ,callback);
-
         }
         
       } else {
