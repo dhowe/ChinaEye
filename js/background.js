@@ -127,7 +127,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     getBlockingStatus(request.tabId, request.url, function(result){
       // console.log(request.url === result.tabUrl, request.url, result.tabUrl);
-      if(request.url === result.tabUrl) callback(result);
+      if (result != undefined && normalizeUrl(request.url) === normalizeUrl(result.tabUrl)) callback(result);
     });
 
   } else if (request.what === "isRedact") {
@@ -147,6 +147,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 });
 
 /**************************** functions ******************************/
+
+function normalizeUrl(url) {
+  //remove protocal
+  result = url.replace(/(^\w+:|^)\/\//, '');
+  return result;
+}
 
 function reloadAllTabs() {
     chrome.tabs.query({
