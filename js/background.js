@@ -9,8 +9,9 @@ var gfw = 'http://www.greatfirewallofchina.org',
   hostRegex = new RegExp(engines.join('|'), 'i'),
   cacheTimeout = 10000;
 
-chrome.runtime.onStartup.addListener(function () {
 
+
+chrome.runtime.onStartup.addListener(function () {
   getTriggersFromLocalStorage();
   updateCheck();
   clearBlockingStatus();
@@ -66,14 +67,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     //2.chrome page
 
     isOnWhiteList(request.location.href, function (result) {
-
+    
       if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
         // setTimeout(function () {
         //   delete disabled[sender.tab.id];
         // }, 5000); // remove after 5 seconds //why?
 
-        // console.log("disabled");
+        logs && console.log("The Page is disabled");
 
         setBlockingStatus(sender.tab.id, request.location.href, request.location.host, {
           status: 'disabled'
@@ -114,8 +115,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     processButton(request.url);
 
     // and reload (will trigger content-script and be ignored)
-
+    setIcon(request.tabId, "disabled");
     chrome.tabs.reload(request.tabId);
+
 
   } else if (request.what === "setRedact") {
 
@@ -131,7 +133,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   } else if (request.what === "getBlockingStatus") {
 
     getBlockingStatus(request.tabId, request.url, function (result) {
-      if (result != undefined && getHostNameFromURL(request.url) === result.host) callback(result);
+      if (result != undefined){
+        //Case 1: not search engine, same host
+        //Case 2: search engine, same url
+        var host = getHostNameFromURL(request.url),
+            isSearchEngine = hostRegex.test(host);
+        if((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl))
+           callback(result);
+         else {
+           console.log(request.url,result.tabUrl);
+           chrome.tabs.get(request.tabId, function (tab) {
+              checkPage(tab, null, callback);
+            });
+         }
+      }
+        
+
     });
 
   } else if (request.what === "isRedact") {
@@ -240,7 +257,7 @@ function isOnWhiteList(targetUrl, callback) {
 
     } else {
       callback && callback({
-        status: 'allow'
+        status: 'notDisabled'
       });
     }
 
@@ -337,7 +354,7 @@ function clearBlockingStatus() {
   });
 }
 
-var setIcon = function (tabId, iconStatus) {
+var setIcon = function (tabId, iconStatus, origin) {
 
   if (tabId === 0) {
     return;
@@ -374,7 +391,7 @@ var setIcon = function (tabId, iconStatus) {
     };
   }
 
-  // console.log("SetIcon", iconStatus);
+  // console.log("SetIcon:" + iconStatus + "; From:" + origin);
   chrome.browserAction.setIcon({
     tabId: tabId,
     path: iconPaths
@@ -382,10 +399,13 @@ var setIcon = function (tabId, iconStatus) {
 }
 
 var updateBadge = function (tabId) {
-
-  getBlockingStatus(tabId, "", function (result) {
-    if (result) setIcon(tabId, result.status);
-  });
+  //add time out for setBlcokingStatus when Page is refreshed
+  setTimeout(function() {
+      getBlockingStatus(tabId, "", function(result) {
+          console.log(result);
+          if (result) setIcon(tabId, result.status, "updateBadge");
+      });
+  }, 500);
 
 }
 
@@ -399,7 +419,7 @@ var checkServer = function (tab, url, host, count, callback) {
 
     result['redact'] = isRedact;
     setBlockingStatus(tab.id, url, host, result);
-    setIcon(tab.id, result.status);
+    setIcon(tab.id, result.status,"checkServer");
     return result;
   }
 
@@ -415,11 +435,11 @@ var checkServer = function (tab, url, host, count, callback) {
   var result = Cache.get(url);
   if (result) {
 
-    logs && console.log('checkPage(cache):', url);
+    logs && console.log('checkPage(cache):', host);
     return handleResult(result);
   }
 
-  logs && console.log('checkPage(server):', url);
+  logs && console.log('checkPage(server):', host);
 
   $.ajax(gfw + '/index.php?siteurl=' + host, {
     success: function (data) {
@@ -470,7 +490,7 @@ var checkPage = function (tab, location, callback) {
             trigger: keyword
           });
 
-          setIcon(tab.id, "block");
+          setIcon(tab.id, "block", "checkPage");
 
           callback({
             status: 'block',
@@ -594,13 +614,16 @@ var getTriggersFromLocalStorage = function (rules) {
   chrome.storage.local.get('list', function (data) {
     if (data.list === undefined) loadListFromLocal(processList);
     else {
-      logs && console.log("Get triggers from local storage: ", data.list);
+      logs && console.log("Get triggers from local storage: ", data.list.length);
       processTriggers(data.list);
     }
   });
 
 }
 
+var onStartup = function () {
+  getTriggersFromLocalStorage();
+}
 var processTriggers = function (rules) {
 
   if (!rules || !rules.length) console.warn('Null rules', rules);
@@ -745,3 +768,9 @@ if (String.prototype.includes instanceof Function === false) {
     return this.indexOf(needle, pos) > -1;
   };
 }
+/******************************************************************************/
+
+onStartup();
+
+/******************************************************************************/
+
