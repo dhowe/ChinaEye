@@ -13,11 +13,7 @@ $(document).ready(function() {
         updateMode();
         renderInterface(currentPageUrl, currentPageTabId);
         
-
-        //button clicks
-        $(".whitelistButtons").click(function() {
-           whitelistButtonOnClick(currentPageUrl);
-        });
+        /**************Interactions********************/
 
         $(".modeButtons").click(modeButtonOnClick);
 
@@ -25,14 +21,19 @@ $(document).ready(function() {
            $(".modeButtons:disabled").toggleClass("enabled");
         })
 
+        $(".whitelistButtons").click(function() {
+           whitelistButtonOnClick(this, currentPageUrl);
+        });
+
+        /**********************************************/
 
     });
 
 });
 
-function whitelistButtonOnClick(currentPageUrl) {
-    var message = $(this).hasClass("resume") ? "resume" : "disable";
-    message += $(this).attr("id") === "disableSite_button" ? "Site" : "Search";
+function whitelistButtonOnClick(current, currentPageUrl) {
+    var message = $(current).hasClass("resume") ? "resume" : "disable";
+    message += $(current).attr("id") === "disableSite_button" ? "Site" : "Search";
 
     // console.log(message, currentPageUrl);
 
@@ -76,6 +77,7 @@ function renderInterface (currentPageUrl, currentPageTabId) {
         tabId: currentPageTabId,
         url: currentPageUrl
     }, function(res) {
+        // console.log(res);
         if (res != undefined) {
             updateButtons(currentPageUrl, res);
             displayServerInfo(res);
@@ -100,6 +102,7 @@ function displayServerInfo (res) {
     }
     if (res.status === "block" && res.servers === undefined) {
         //blocked by searchkeyword
+        console.log("here");
         $(".response .status").toggleClass("ok").text("ok");
         $("p.info").text(ALLPASS);
     } else {
@@ -124,7 +127,6 @@ function displayServerInfo (res) {
 
 function updateMode () {
     /****************************
-    No.1 :
     ask background page, 
     whether the page is on Redact or Info Mode
     ****************************/
@@ -140,24 +142,20 @@ function updateMode () {
 
 }
 
-function updateButtons (tabUrl, status) {
-    
-    if(status) status = status.status;
+function updateButtons (tabUrl, res) {
+    var status, trigger;
+    if (res) {
+      status = res.status;
+      trigger = res.trigger;
+    }
 
     /****************************
-    No.2 :
-    if the page is blocked/disabled
-    check whether it is on search Engine, 
-    if yes, show disableSearch button
+    No.1 :
+    if the page is blocked and if it is blocked by search keyword
+      show disableSearch button
     ****************************/
-    if (status != "allow") {
-       //disable or block
-        chrome.runtime.sendMessage({
-            what: "isOnSearchResultPage",
-            url: tabUrl
-        }, function(res) {
-            if (res) $('#disableSearch_button').show();
-        });
+    if (status === "block" && trigger != undefined) {
+        $('#disableSearch_button').show();
     }
 
     /****************************
@@ -171,44 +169,40 @@ function updateButtons (tabUrl, status) {
      ****************************/
 
     if (status === "disabled") {
-
+        
         chrome.runtime.sendMessage({
-            what: "isOnWhiteList",
-            url: tabUrl
-        }, function(whitelist) {
-            // console.log("isOnWhiteList? ", whitelist);
-            if (whitelist && whitelist.status == 'disabled') {
-                //change the button text 
-                // console.log("change button text");
-                if (whitelist.lists.indexOf("whiteListedSites") !== -1) {
-                    $('#disableSite_button').text("Resume for this site"); //change i18n class in the future
-                    $('#disableSite_button').addClass("resume");
+                what: "isOnWhiteList",
+                url: tabUrl
+            }, function(whitelist) {
+                // console.log("isOnWhiteList? ", whitelist);
+                if (whitelist && whitelist.status == 'disabled') {
+                    //change the button text 
+                    // console.log("change button text");
+                    if (whitelist.lists.indexOf("whiteListedSites") !== -1) {
+                        $('#disableSite_button').text("Resume for this site"); //change i18n class in the future
+                        $('#disableSite_button').show().addClass("resume");
+                    }
+
+                    if (whitelist.lists.indexOf("whiteListedSearches") !== -1) {
+                        $('#disableSearch_button').text("Resume for this search");
+                        $('#disableSearch_button').show();
+                        $('#disableSearch_button').addClass("resume");
+                    }
+
                 }
-
-                if (whitelist.lists.indexOf("whiteListedSearches") !== -1 && $('#disableSearch_button').css('display') !== 'none') {
-                    $('#disableSearch_button').text("Resume for this search");
-                    $('#disableSearch_button').addClass("resume");
-                }
-
-            } else {
-               
-                if (status.status == 'allow')
-                    $('.whitelistButtons').prop('disabled', true);
-
-            }
-
         });
-    } else if( status === "allowed" || status === undefined){
 
-        /****************************
-         No.4 :
-         if the page is allowed/undefined
-         disable "disable site" button
-        ****************************/
-
-        $('.whitelistButtons').prop('disabled', true);
     }
-}
 
+    /****************************
+     No.4 :
+     if the page is allowed/undefined
+     disable "disable site" button
+    ****************************/
+
+    if (status === "allow")
+      $('.whitelistButtons').prop('disabled', true);
+
+}
 
 

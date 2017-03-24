@@ -430,7 +430,11 @@ var checkPage = function(tab, location, callback) {
 
                 logs && console.log('block: ' + keyword);
               
-                setBlockingStatus(tab.id, url, {status: 'block'});
+                setBlockingStatus(tab.id, url, {
+                  status: 'block',
+                  trigger: keyword
+                });
+
                 setIcon(tab.id, "block");
 
                 callback({
