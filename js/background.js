@@ -1,55 +1,59 @@
+var logs = 1,
+  disabled = {},
+  isRedact = true;
 
-var logs = false, disabled = {}, isRedact = true;
-  gfw = 'http://www.greatfirewallofchina.org',
+var gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
   listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
-  hostRegex = new RegExp(engines.join('|'), 'i');
+  hostRegex = new RegExp(engines.join('|'), 'i'),
+  cacheTimeout = 10000;
 
 chrome.runtime.onStartup.addListener(function () {
+
   getTriggersFromLocalStorage();
   updateCheck();
   clearBlockingStatus();
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-  loadListFromLocal(processList);
-    
-  chrome.storage.local.set({
-      "whitelistedSites": [""],
-      "whitelistedSearches": [""],
-      "tabsBlockingStatus": {}
-  });
 
+  loadListFromLocal(processList);
+
+  chrome.storage.local.set({
+    "whitelistedSites": [""],
+    "whitelistedSearches": [""],
+    "tabsBlockingStatus": {}
+  });
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
   // console.log('onUpdated', tabId, changeInfo, tab);
   if (changeInfo && changeInfo.status == "complete") {
-   
+
     chrome.tabs.sendMessage(tabId, {
       what: 'tabUpdate',
       url: tab.url
     });
 
     updateBadge(tabId);
-       
   }
 });
 
-chrome.tabs.onActivated.addListener (function (activeInfo) {
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+
   // console.log("Active", activeInfo.tabId);
   updateBadge(activeInfo.tabId);
 
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId) {
-   removeBlockingStatus(tabId);
+
+  removeBlockingStatus(tabId);
 });
 
 /**************************** Messaging ******************************/
-
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
@@ -57,53 +61,54 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   if (request.what === "checkPage") {
 
-      //DIABLED
-      //1.on disabled list
-      //2.chrome page
+    //DISABLED
+    //1.on disabled list
+    //2.chrome page
 
-    isOnWhiteList(request.location.href, function(result) {
+    isOnWhiteList(request.location.href, function (result) {
 
-        if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
+      if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
-            // setTimeout(function () {
-            //   delete disabled[sender.tab.id];
-            // }, 5000); // remove after 5 seconds //why?
+        // setTimeout(function () {
+        //   delete disabled[sender.tab.id];
+        // }, 5000); // remove after 5 seconds //why?
 
-            // console.log("disabled");
+        // console.log("disabled");
 
-            setBlockingStatus(sender.tab.id, request.location.href,{status: 'disabled'});
+        setBlockingStatus(sender.tab.id, request.location.href, {
+          status: 'disabled'
+        });
 
-            callback && callback({
-                status: 'disabled'
-            });
+        callback && callback({
+          status: 'disabled'
+        });
 
-            return;
+        return;
 
-        } else {
-            checkPage(sender.tab, request.location, callback);
-          }
-   });
-    
+      } else {
 
-  } else if (request.what === "disableSite" || request.what === "disableSearch" || request.what === "resumeSite" || request.what === "resumeSearch") { 
+        checkPage(sender.tab, request.location, callback);
+      }
+    });
+
+  } else if (request.what === "disableSite" || request.what === "disableSearch" || request.what === "resumeSite" || request.what === "resumeSearch") {
     // from popup button
-    
+
     var processButton;
 
     switch (request.what) {
-        case "disableSite":
-            processButton = setSiteToWhitelist;
-            break;
-        case "disableSearch":
-            processButton = setSearchToWhitelist;
-            break;
-        case "resumeSite":
-            processButton = removeSiteFromWhitelist;
-            break;
-        case "resumeSearch":
-            processButton = removeSearchFromWhitelist;
-            break;
-
+    case "disableSite":
+      processButton = setSiteToWhitelist;
+      break;
+    case "disableSearch":
+      processButton = setSearchToWhitelist;
+      break;
+    case "resumeSite":
+      processButton = removeSiteFromWhitelist;
+      break;
+    case "resumeSearch":
+      processButton = removeSearchFromWhitelist;
+      break;
     }
     // console.log("processButton", request.url);
     processButton(request.url);
@@ -113,7 +118,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     chrome.tabs.reload(request.tabId);
 
   } else if (request.what === "setRedact") {
-    
+
     isRedact = request.value;
     //Reload all tabs
     reloadAllTabs();
@@ -125,25 +130,23 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   } else if (request.what === "getBlockingStatus") {
 
-    getBlockingStatus(request.tabId, request.url, function(result){
+    getBlockingStatus(request.tabId, request.url, function (result) {
       // console.log(request.url === result.tabUrl, request.url, result.tabUrl);
       if (result != undefined && normalizeUrl(request.url) === normalizeUrl(result.tabUrl)) callback(result);
     });
 
   } else if (request.what === "isRedact") {
 
-   callback && callback(isRedact);
+    callback && callback(isRedact);
 
   } else if (request.what === "isOnSearchResultPage") {
-    
+
     var isSearchEngine = hostRegex.test(getHostNameFromURL(request.url));
     var key = getSearchKeywordFromURL(request.url);
     callback && callback(isSearchEngine && key);
-
   }
 
   return true;
-
 });
 
 /**************************** functions ******************************/
@@ -157,23 +160,24 @@ function normalizeUrl(url) {
 }
 
 function reloadAllTabs() {
-    chrome.tabs.query({
-        currentWindow: true
-    }, function(result) {
+  chrome.tabs.query({
+    currentWindow: true
+  }, function (result) {
 
-        for (var key in result) {
-            var tab = result[key];
-            if (tab.url != undefined) chrome.tabs.reload(tab.id);
-        }
+    for (var key in result) {
+      var tab = result[key];
+      if (tab.url != undefined) chrome.tabs.reload(tab.id);
+    }
 
-    });
+  });
 
 }
 
 function keysValues(href) {
 
-  var vars = [], hashes;
-    
+  var vars = [],
+    hashes;
+
   if (href) hashes = href.slice(href.indexOf('?') + 1).split(/&|\#/);
   if (hashes === undefined) return null;
 
@@ -188,217 +192,249 @@ function keysValues(href) {
 }
 
 function getSearchKeywordFromURL(url) {
-    var keyvals = keysValues(url), keyword, result;
-    if (keyvals) keyword = keyvals.q || keyvals.p;
-    if (keyword) result = decodeURI(keyword.toLowerCase());
+  var keyvals = keysValues(url),
+    keyword, result;
+  if (keyvals) keyword = keyvals.q || keyvals.p;
+  if (keyword) result = decodeURI(keyword.toLowerCase());
 
-    if (result && result.indexOf(" ") > -1)
-        result = result.replace(" ", "+");
+  if (result && result.indexOf(" ") > -1)
+    result = result.replace(" ", "+");
 
-    return result;
+  return result;
 }
 
-var getHostNameFromURL = function(url) {
-    if(typeof url != "string") return null;
-    var matches = url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
-    var domain = matches && matches[1];
-    return domain;
+var getHostNameFromURL = function (url) {
+  if (typeof url != "string") return null;
+  var matches = url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
+  var domain = matches && matches[1];
+  return domain;
 }
 
 function isOnWhiteList(targetUrl, callback) {
-    //Check whether the targetUrl is on WhiteList
-     
-    var host = getHostNameFromURL(targetUrl);
-    var lists = [];
+  //Check whether the targetUrl is on WhiteList
 
-    chrome.storage.local.get(["whitelistedSites", "whitelistedSearches"], function(result) {
-        // console.log(result.whitelistedSites,result.whitelistedSearches);
+  var host = getHostNameFromURL(targetUrl);
+  var lists = [];
 
-        if (host && result.whitelistedSites.length > 0){
-          for(let listItem of result.whitelistedSites){
-              if(listItem === host) lists.push("whiteListedSites");
-            }
-        }
+  chrome.storage.local.get(["whitelistedSites", "whitelistedSearches"], function (result) {
+    // console.log(result.whitelistedSites,result.whitelistedSearches);
 
-        if (host && hostRegex.test(host)) {
-            var key = getSearchKeywordFromURL(targetUrl);
-            for(let listItem of result.whitelistedSearches){
-              if(listItem === key) lists.push("whiteListedSearches");
-            }
-        }
+    if (host && result.whitelistedSites.length > 0) {
+      for (let listItem of result.whitelistedSites) {
+        if (listItem === host) lists.push("whiteListedSites");
+      }
+    }
 
-        if (lists.length > 0) {
-           
-            callback && callback({
-                status: 'disabled',
-                lists: lists
-            });
+    if (host && hostRegex.test(host)) {
+      var key = getSearchKeywordFromURL(targetUrl);
+      for (let listItem of result.whitelistedSearches) {
+        if (listItem === key) lists.push("whiteListedSearches");
+      }
+    }
 
-        } else {
-            callback && callback({
-                status: 'allow'
-            });
-        }
+    if (lists.length > 0) {
 
-    });
+      callback && callback({
+        status: 'disabled',
+        lists: lists
+      });
 
+    } else {
+      callback && callback({
+        status: 'allow'
+      });
+    }
+
+  });
 }
 
-function setSiteToWhitelist(targetUrl){
+function setSiteToWhitelist(targetUrl) {
   setEntryToList(getHostNameFromURL(targetUrl), "whitelistedSites");
 }
 
-function setSearchToWhitelist(targetUrl){
+function setSearchToWhitelist(targetUrl) {
   setEntryToList(getSearchKeywordFromURL(targetUrl), "whitelistedSearches");
 }
 
-function removeSiteFromWhitelist(targetUrl){
+function removeSiteFromWhitelist(targetUrl) {
   removeEntryFromList(getHostNameFromURL(targetUrl), "whitelistedSites");
 }
 
-function removeSearchFromWhitelist(targetUrl){
+function removeSearchFromWhitelist(targetUrl) {
   removeEntryFromList(getSearchKeywordFromURL(targetUrl), "whitelistedSearches");
 }
 
-function setEntryToList(entry, list){
-  chrome.storage.local.get(list, function(result) {
-      var data = result[list];
-      data.push(entry);
-      var item = {};
-      item[list] = data;
-      chrome.storage.local.set(item);
+function setEntryToList(entry, list) {
+  chrome.storage.local.get(list, function (result) {
+    var data = result[list];
+    data.push(entry);
+    var item = {};
+    item[list] = data;
+    chrome.storage.local.set(item);
   });
 
 }
 
-function removeEntryFromList(entry, list){
-  
-  chrome.storage.local.get(list, function(result) {
-      var data = result[list];
-      data.splice(data.indexOf(entry), 1);
-      var item = {};
-      item[list] = data;
-      chrome.storage.local.set(item);
+function removeEntryFromList(entry, list) {
+
+  chrome.storage.local.get(list, function (result) {
+    var data = result[list];
+    data.splice(data.indexOf(entry), 1);
+    var item = {};
+    item[list] = data;
+    chrome.storage.local.set(item);
 
   });
 
 }
 
 function setBlockingStatus(tabId, tabUrl, status) {
-    logs && console.log("setBlockingStatus", tabId, tabUrl, status);
-    chrome.storage.local.get("tabsBlockingStatus", function(result) {
-        result = result.tabsBlockingStatus;
-        var items = status;
-        items["tabUrl"] = tabUrl;
-        result[tabId.toString()] = items;
-        chrome.storage.local.set({ "tabsBlockingStatus": result });
-
+  logs && console.log("setBlockingStatus", tabId, tabUrl, status);
+  chrome.storage.local.get("tabsBlockingStatus", function (result) {
+    result = result.tabsBlockingStatus;
+    var items = status;
+    items["tabUrl"] = tabUrl;
+    result[tabId.toString()] = items;
+    chrome.storage.local.set({
+      "tabsBlockingStatus": result
     });
+
+  });
 }
 
 function removeBlockingStatus(tabId) {
-    chrome.storage.local.get("tabsBlockingStatus", function(result) {
-        result = result.tabsBlockingStatus;
-        delete result[tabId];
-        chrome.storage.local.set({ "tabsBlockingStatus": result });
+  chrome.storage.local.get("tabsBlockingStatus", function (result) {
+    result = result.tabsBlockingStatus;
+    delete result[tabId];
+    chrome.storage.local.set({
+      "tabsBlockingStatus": result
     });
+  });
 }
 
 function getBlockingStatus(tabId, tabUrl, callback) {
-    //get the blocking status from record
-    chrome.storage.local.get("tabsBlockingStatus", function(result) {
-        var target = result.tabsBlockingStatus[tabId];
-        if (target !== undefined) {
-            callback(target);
-        } else {
 
-          chrome.tabs.get(tabId, function(tab){
-             checkPage(tab, null, callback);
-          });
-         
-        }
-    });
+  //get the blocking status from record
+  chrome.storage.local.get("tabsBlockingStatus", function (result) {
+
+    var target = result.tabsBlockingStatus[tabId];
+    if (target !== undefined) {
+      callback(target);
+    } else {
+
+      chrome.tabs.get(tabId, function (tab) {
+        checkPage(tab, null, callback);
+      });
+
+    }
+  });
 
 }
 
 function clearBlockingStatus() {
-    chrome.storage.local.set({"tabsBlockingStatus": {}});
+  chrome.storage.local.set({
+    "tabsBlockingStatus": {}
+  });
 }
 
-var setIcon = function(tabId, iconStatus) {
-   
-    if ( tabId === 0 ) {
-        return;
+var setIcon = function (tabId, iconStatus) {
+
+  if (tabId === 0) {
+    return;
+  }
+
+  var onIconReady = function () {
+    if (chrome.runtime.lastError) {
+      console.log(chrome.runtime.lastError.message);
+      return;
+    } else {
+      //tab exists
     }
-    
-    var onIconReady = function() {
-        if ( chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
-            return;
-        } else{
-          //tab exists
-        }
+  };
+
+  var iconPaths;
+
+  switch (iconStatus) {
+  case 'block':
+    iconPaths = {
+      '16': 'img/blocked16.png',
+      '32': 'img/blocked32.png'
     };
+    break;
+  case 'disabled':
+    iconPaths = {
+      '16': 'img/disabled16.png',
+      '32': 'img/disabled32.png'
+    };
+    break;
+  default: //on
+    iconPaths = {
+      '16': 'img/icon16.png',
+      '32': 'img/icon32.png'
+    };
+  }
 
-    var iconPaths;
-
-    switch(iconStatus) {
-        case 'block':
-            iconPaths = { '16': 'img/blocked16.png', '32': 'img/blocked32.png'};
-            break;
-        case 'disabled':
-            iconPaths = { '16': 'img/disabled16.png', '32': 'img/disabled32.png'};
-            break;
-        default://on
-            iconPaths = { '16': 'img/icon16.png', '32': 'img/icon32.png'};
-    }
-
-    // console.log("SetIcon", iconStatus);
-    chrome.browserAction.setIcon({ tabId: tabId, path: iconPaths }, onIconReady);
+  // console.log("SetIcon", iconStatus);
+  chrome.browserAction.setIcon({
+    tabId: tabId,
+    path: iconPaths
+  }, onIconReady);
 }
 
-var updateBadge = function(tabId) {
-    
-    getBlockingStatus(tabId, "", function(result){
-      if(result) setIcon(tabId, result.status);
-    });
+var updateBadge = function (tabId) {
+
+  getBlockingStatus(tabId, "", function (result) {
+    if (result) setIcon(tabId, result.status);
+  });
 
 }
 
 /**************************** core ******************************/
 
-
 var checkServer = function (tab, url, count, callback) {
 
+  var handleResult = function (result) {
+
+    Cache.set(url, result, cacheTimeout);
+
+    result['redact'] = isRedact;
+    setBlockingStatus(tab.id, url, result);
+    setIcon(tab.id, result.status);
+    return result;
+  }
+
+  var onSuccess = function (data) {
+
+    return handleResult(parseResults(data));
+  }
+
   //chrome newtab
-  if (url && url.indexOf("/chrome/newtab?") != -1) 
+  if (url && url.indexOf("/chrome/newtab?") != -1)
     url = url.split("/chrome/newtab?")[0];
 
-   logs && console.log('checkPage:', url);
+  var result = Cache.get(url);
+  if (result) {
 
-   var onSuccess = function(data) {
-       var result = parseResults(data);
-       result['redact'] = isRedact;
-       setBlockingStatus(tab.id, url, result);
-       setIcon(tab.id, result.status);
-       return result;
+    logs && console.log('checkPage(cache):', url);
+    return handleResult(result);
+  }
 
-   }
+  logs && console.log('checkPage(server):', url);
 
   $.ajax(gfw + '/index.php?siteurl=' + url, {
     success: function (data) {
-      if (data.indexOf("An error occured - please try again later.")> -1) {
+      if (data.indexOf("An error occured - please try again later.") > -1) {
         // console.log(data);
         if (count === 0 && url && url.startsWith("https")) {
           var newurl = url.replace("https", "http");
           logs && console.log("Retry with url:" + newurl);
-          checkServer(tab, newurl, 1 ,callback);
+          checkServer(tab, newurl, 1, callback);
         }
-        
+
       } else {
         callback(onSuccess(data));
       }
-      
+
     },
     error: function (e) {
       callback({
@@ -410,74 +446,69 @@ var checkServer = function (tab, url, count, callback) {
   });
 }
 
-var checkPage = function(tab, location, callback) {
+var checkPage = function (tab, location, callback) {
 
-   var url = location ? location.href : tab.url,
-       host = location ? location.host : getHostNameFromURL(tab.url);
+  var url = location ? location.href : tab.url,
+    host = location ? location.host : getHostNameFromURL(tab.url);
 
-   if (hostRegex.test(host)) {
+  if (hostRegex.test(host)) {
 
     var keyword = getSearchKeywordFromURL(url);
 
     if (keyword && keyword.length) {
 
-        logs && console.log('search: ' + keyword);
+      logs && console.log('search: ' + keyword);
 
-        //for (var i = 0; i < triggers.length; i++) {
-        for (let trigger of triggers) {
+      //for (var i = 0; i < triggers.length; i++) {
+      for (let trigger of triggers) {
 
-            if (keyword === trigger) {
+        if (keyword === trigger) {
 
-                logs && console.log('block: ' + keyword);
-              
-                setBlockingStatus(tab.id, url, {
-                  status: 'block',
-                  trigger: keyword
-                });
+          logs && console.log('block: ' + keyword);
 
-                setIcon(tab.id, "block");
+          setBlockingStatus(tab.id, url, {
+            status: 'block',
+            trigger: keyword
+          });
 
-                callback({
-                    status: 'block',
-                    trigger: keyword,
-                    redact: isRedact
-                });
+          setIcon(tab.id, "block");
 
+          callback({
+            status: 'block',
+            trigger: keyword,
+            redact: isRedact
+          });
 
-
-                return true; // got one, we're done
-            }
+          return true; // got one, we're done
         }
+      }
     }
   }
-    
-    //Otherwise
+
   checkServer(tab, url, 0, callback);
-
 }
-
 
 var parseResults = function (html) {
 
-  var fails = 0, locs, vals, result = {};
+  var fails = 0,
+    locs, vals, result = {};
 
   // remove img tags before calling find
   html = html.replace(/<img\b[^>]*>/ig, '');
   locs = $(html).find('.resultlocation');
   vals = $(html).find('.resultstatus');
 
-  if (locs.length === 0  && vals.length === 0) {
+  if (locs.length === 0 && vals.length === 0) {
     //check whether it is an error message
     var container = $(html).find('#contentContainer div');
-    if ($(container[0]).text().indexOf("error") > -1){
+    if ($(container[0]).text().indexOf("error") > -1) {
 
       result.info = "An error occured - please try again later.";
     }
-      
+
     return result;
   }
 
-  
   result.servers = {};
 
   for (var i = 0; i < locs.length; i++) {
@@ -490,8 +521,7 @@ var parseResults = function (html) {
   result.status = fails > 2 ? 'block' : 'allow';
   result.info = $(html).find(".uitleg td").text();
 
-
-  logs && console.log('result:', locs.length, vals.length, result);
+  logs && console.log('parsed-result:', locs.length, vals.length, result);
 
   return result;
 }
@@ -502,7 +532,7 @@ var downloadList = function (callback) {
     url: listUrl,
     type: 'get',
     success: function (data) {
-      logs && console.log("Got list from: "  + listUrl + " " +  data.length);
+      logs && console.log("Got list from: " + listUrl + " " + data.length);
       callback(data);
     },
     error: function (e) {
@@ -565,7 +595,7 @@ var getTriggersFromLocalStorage = function (rules) {
   chrome.storage.local.get('list', function (data) {
     if (data.list === undefined) loadListFromLocal(processList);
     else {
-      logs && console.log("Get triggers from local storage: ",data.list);
+      logs && console.log("Get triggers from local storage: ", data.list);
       processTriggers(data.list);
     }
   });
@@ -591,12 +621,12 @@ var processTriggers = function (rules) {
       triggers.add(keywords[1]);
   }
 
-  logs && console.log(triggers.size + ' triggers loaded/processed',triggers);
+  logs && console.log(triggers.size + ' triggers loaded/processed', triggers);
 }
 
 var isValid = function (trigger, list) {
 
-  var ok = typeof trigger === 'string' && trigger.length;// && !list.contains(trigger);
+  var ok = typeof trigger === 'string' && trigger.length; // && !list.contains(trigger);
 
   //if (!ok && logs) console.warn('Bad: "'+trigger+'"');
 
@@ -626,6 +656,51 @@ var processList = function (list) {
 
   processTriggers(rules);
 }
+
+var Cache = {
+
+  cacheData: {},
+
+  get: (key) => {
+    if (Cache.cacheData.hasOwnProperty(key) && Cache.cacheData[key].val) {
+      return Cache.cacheData[key].val;
+    }
+    return false;
+  },
+
+  set: (key, value, expiry) => {
+
+    Cache.clear(key);
+
+    var to = false;
+    if (expiry && parseInt(expiry) > 0) {
+      to = setTimeout(function() {
+        Cache.clear(key);
+      }, parseInt(expiry));
+    }
+
+    Cache.cacheData[key] = {
+          expiry: expiry,
+          val: value,
+          timeout: to,
+        };
+  },
+
+  clear: (key) => {
+
+    if (Cache.cacheData.hasOwnProperty(key)) {
+      if (Cache.cacheData[key].to) {
+        clearTimeout(Cache.cacheData[key].to);
+      }
+
+      delete Cache.cacheData[key];
+      return true;
+    }
+
+    return false;
+  },
+};
+
 
 /**************************** polyfill ******************************/
 
