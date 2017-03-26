@@ -119,6 +119,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     chrome.tabs.reload(request.tabId);
 
 
+  }  else if (request.what === "recheckCurrentPage") {
+
+    Cache.clear(key);
+    chrome.tabs.get(request.tabId, function (tab) {
+       checkServer(tab, request.url, getHostNameFromURL(request.url), 0, callback);
+    });
+   
   } else if (request.what === "setRedact") {
 
     isRedact = request.value;
@@ -141,7 +148,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         if((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl))
            callback(result);
          else {
-           console.log(request.url,result.tabUrl);
+           // console.log(request.url,result.tabUrl);
            chrome.tabs.get(request.tabId, function (tab) {
               checkPage(tab, null, callback);
             });
@@ -450,7 +457,7 @@ var checkServer = function (tab, url, host, count, callback) {
         }
 
       } else {
-        callback(onSuccess(data));
+        callback && callback(onSuccess(data));
       }
 
     },

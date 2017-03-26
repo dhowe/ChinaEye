@@ -18,6 +18,10 @@ $(document).ready(function () {
 
     $(".modeButtons").click(modeButtonOnClick);
 
+     $("#recheck_button").click(function() {
+      recheckButtonOnClick(currentPageTabId, currentPageUrl, renderInterface);
+    });
+
     $(".modeButtons:enabled").hover(function () {
       $(".modeButtons:disabled").toggleClass("enabled");
     })
@@ -31,6 +35,18 @@ $(document).ready(function () {
   });
 
 });
+
+function recheckButtonOnClick(id, url, callback) {
+
+  chrome.runtime.sendMessage({
+    what: "recheckCurrentPage",
+    tabId: id,
+    url: url
+  }, function() {
+    callback(url, id);
+  });
+
+}
 
 function whitelistButtonOnClick(current, currentPageUrl) {
   var message = $(current).hasClass("resume") ? "resume" : "disable";
@@ -100,10 +116,12 @@ function displayServerInfo(res) {
     //error
     $('ul').hide();
   }
+
+  $(".response .status").attr('class','status');
+
   if (res.status === "block" && res.servers === undefined) {
     //blocked by searchkeyword
-    console.log("here");
-    $(".response .status").toggleClass("ok").text("ok");
+    $(".response .status").addClass("ok").text("ok");
     $("p.info").text(ALLPASS);
   } else {
     var count = 0;
@@ -115,9 +133,9 @@ function displayServerInfo(res) {
         $(".response#" + placeId + " .status").text(result);
 
         if (result === "ok" || result === "fail")
-          $(".response#" + placeId + " .status").toggleClass(result);
+          $(".response#" + placeId + " .status").addClass(result);
         else if (result.length > 0)
-          $(".response#" + placeId + " .status").toggleClass("yellow");
+          $(".response#" + placeId + " .status").addClass("yellow");
       }
     }
   }
@@ -181,6 +199,7 @@ function updateButtons(tabUrl, res) {
         if (whitelist.lists.indexOf("whiteListedSites") !== -1) {
           $('#disableSite_button').text("Resume for this site"); //change i18n class in the future
           $('#disableSite_button').show().addClass("resume");
+          $('.serverResult').hide();//hide server result if the site is disabled
         }
 
         if (whitelist.lists.indexOf("whiteListedSearches") !== -1) {
