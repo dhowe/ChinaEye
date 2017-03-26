@@ -7,7 +7,7 @@ var gfw = 'http://www.greatfirewallofchina.org',
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
   listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
   hostRegex = new RegExp(engines.join('|'), 'i'),
-  cacheTimeout = 10000;
+  cacheTimeout = 1000 * 60 * 5;  // 5 min
 
 chrome.runtime.onStartup.addListener(function () {
 
