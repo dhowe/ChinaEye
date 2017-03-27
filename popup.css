@@ -9,15 +9,15 @@ body {
   font-family: Redacted;
   src: url("fonts/redacted-regular.woff");
 }
-img {
+img#logo {
   margin-bottom: 1em;
 }
 .serverResult {
   text-align: left;
-  margin: 15px 5px -10px;
   padding-bottom: 5px;
 }
 #credits {
+  color:gray;
   font-size: 11px;
   text-align: right;
   margin: 15px 5px -10px;
@@ -43,12 +43,15 @@ ul li {
 }
 ul li .status {
   font-size: 14px;
-  background-color: gray;
   text-transform: uppercase;
   float: right;
   color: white;
   padding: 0 5px;
   letter-spacing: .05em;
+}
+.status img {
+  width:14px;
+  height:14px;
 }
 ul li .fail {
   background-color: black;
@@ -63,10 +66,10 @@ ul li .yellow {
   color: gray;
   font-weight: 200;
 }
-.serverResult p a {
+#credits a {
   color: gray;
 }
-.serverResult p a:hover {
+#credits a:hover {
   color: black;
 }
 
@@ -84,7 +87,7 @@ button {
 }
 button.modeButtons {
   width: 50%;
-  margin: 7px -5px;
+  margin: 7px -2px;
 }
 button#disableSearch_button {
   display: none;
