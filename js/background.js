@@ -1,4 +1,4 @@
-var logs = 0,
+var logs = 1,
   disabled = {},
   isRedact = true;
 
@@ -7,9 +7,7 @@ var gfw = 'http://www.greatfirewallofchina.org',
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
   listUrl = 'https://raw.githubusercontent.com/dhowe/ChinaEye/master/sensitiveKeywords.txt',
   hostRegex = new RegExp(engines.join('|'), 'i'),
-  cacheTimeout = 1000 * 60 * 5;  // 5 min
-
-
+  cacheTimeout = 1000 * 60 * 5; // 5 min
 
 chrome.runtime.onStartup.addListener(function () {
   getTriggersFromLocalStorage();
@@ -67,12 +65,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     //2.chrome page
 
     isOnWhiteList(request.location.href, function (result) {
-    
-      if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
-        // setTimeout(function () {
-        //   delete disabled[sender.tab.id];
-        // }, 5000); // remove after 5 seconds //why?
+      if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
 
         logs && console.log("The Page is disabled");
 
@@ -92,7 +86,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       }
     });
 
-  } else if (request.what === "disableSite" || request.what === "disableSearch" || request.what === "resumeSite" || request.what === "resumeSearch") {
+  } else if (request.what === "disableSite" || request.what === "disableSearch" ||
+    request.what === "resumeSite" || request.what === "resumeSearch") {
+
     // from popup button
 
     var processButton;
@@ -118,20 +114,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     setIcon(request.tabId, "disabled");
     chrome.tabs.reload(request.tabId);
 
-
-  }  else if (request.what === "recheckCurrentPage") {
+  } else if (request.what === "recheckCurrentPage") {
 
     Cache.clear(key);
     chrome.tabs.get(request.tabId, function (tab) {
-       checkServer(tab, request.url, getHostNameFromURL(request.url), 0, callback);
+      checkServer(tab, request.url, getHostNameFromURL(request.url), 0, callback);
     });
-   
+
   } else if (request.what === "setRedact") {
 
     isRedact = request.value;
-    //Reload all tabs
     reloadAllTabs();
-    // chrome.tabs.reload(request.tabId);
 
   } else if (request.what === "isOnWhiteList") {
 
@@ -140,21 +133,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   } else if (request.what === "getBlockingStatus") {
 
     getBlockingStatus(request.tabId, request.url, function (result) {
-      if (result != undefined){
+
+      if (result != undefined) {
+
         //Case 1: not search engine, same host
         //Case 2: search engine, same url
         var host = getHostNameFromURL(request.url),
-            isSearchEngine = hostRegex.test(host);
-        if((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl))
-           callback(result);
-         else {
-           // console.log(request.url,result.tabUrl);
-           chrome.tabs.get(request.tabId, function (tab) {
-              checkPage(tab, null, callback);
-            });
-         }
+          isSearchEngine = hostRegex.test(host);
+        if ((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl))
+          callback(result);
+        else {
+          // console.log(request.url,result.tabUrl);
+          chrome.tabs.get(request.tabId, function (tab) {
+            checkPage(tab, null, callback);
+          });
+        }
       }
-        
 
     });
 
@@ -174,7 +168,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
 /**************************** functions ******************************/
 
-function normalizeUrl(url) {
+function normalizeUrl(url) {  // not used?
+
   //remove protocal
   if (url === undefined) return undefined;
 
@@ -183,6 +178,7 @@ function normalizeUrl(url) {
 }
 
 function reloadAllTabs() {
+
   chrome.tabs.query({
     currentWindow: true
   }, function (result) {
@@ -215,6 +211,7 @@ function keysValues(href) {
 }
 
 function getSearchKeywordFromURL(url) {
+
   var keyvals = keysValues(url),
     keyword, result;
   if (keyvals) keyword = keyvals.q || keyvals.p;
@@ -227,6 +224,7 @@ function getSearchKeywordFromURL(url) {
 }
 
 var getHostNameFromURL = function (url) {
+
   if (typeof url != "string") return null;
   var matches = url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
   var domain = matches && matches[1];
@@ -234,6 +232,7 @@ var getHostNameFromURL = function (url) {
 }
 
 function isOnWhiteList(targetUrl, callback) {
+
   //Check whether the targetUrl is on WhiteList
 
   var host = getHostNameFromURL(targetUrl);
@@ -288,6 +287,7 @@ function removeSearchFromWhitelist(targetUrl) {
 }
 
 function setEntryToList(entry, list) {
+
   chrome.storage.local.get(list, function (result) {
     var data = result[list];
     data.push(entry);
@@ -312,6 +312,7 @@ function removeEntryFromList(entry, list) {
 }
 
 function setBlockingStatus(tabId, tabUrl, host, status) {
+
   logs && console.log("setBlockingStatus", tabId, tabUrl, host, status);
   chrome.storage.local.get("tabsBlockingStatus", function (result) {
     result = result.tabsBlockingStatus;
@@ -327,6 +328,7 @@ function setBlockingStatus(tabId, tabUrl, host, status) {
 }
 
 function removeBlockingStatus(tabId) {
+
   chrome.storage.local.get("tabsBlockingStatus", function (result) {
     result = result.tabsBlockingStatus;
     delete result[tabId];
@@ -356,6 +358,7 @@ function getBlockingStatus(tabId, tabUrl, callback) {
 }
 
 function clearBlockingStatus() {
+
   chrome.storage.local.set({
     "tabsBlockingStatus": {}
   });
@@ -406,11 +409,12 @@ var setIcon = function (tabId, iconStatus, origin) {
 }
 
 var updateBadge = function (tabId) {
+
   //add time out for setBlcokingStatus when Page is refreshed
-  setTimeout(function() {
-      getBlockingStatus(tabId, "", function(result) {
-          if (result) setIcon(tabId, result.status, "updateBadge");
-      });
+  setTimeout(function () {
+    getBlockingStatus(tabId, "", function (result) {
+      if (result) setIcon(tabId, result.status, "updateBadge");
+    });
   }, 500);
 
 }
@@ -425,7 +429,7 @@ var checkServer = function (tab, url, host, count, callback) {
 
     result['redact'] = isRedact;
     setBlockingStatus(tab.id, url, host, result);
-    setIcon(tab.id, result.status,"checkServer");
+    setIcon(tab.id, result.status, "checkServer");
     return result;
   }
 
@@ -630,6 +634,7 @@ var getTriggersFromLocalStorage = function (rules) {
 var onStartup = function () {
   getTriggersFromLocalStorage();
 }
+
 var processTriggers = function (rules) {
 
   if (!rules || !rules.length) console.warn('Null rules', rules);
@@ -702,16 +707,16 @@ var Cache = {
 
     var to = false;
     if (expiry && parseInt(expiry) > 0) {
-      to = setTimeout(function() {
+      to = setTimeout(function () {
         Cache.clear(key);
       }, parseInt(expiry));
     }
 
     Cache.cacheData[key] = {
-          expiry: expiry,
-          val: value,
-          timeout: to,
-        };
+      expiry: expiry,
+      val: value,
+      timeout: to,
+    };
   },
 
   clear: (key) => {
@@ -728,7 +733,6 @@ var Cache = {
     return false;
   },
 };
-
 
 /**************************** polyfill ******************************/
 
@@ -779,4 +783,3 @@ if (String.prototype.includes instanceof Function === false) {
 onStartup();
 
 /******************************************************************************/
-

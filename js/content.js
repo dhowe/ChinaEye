@@ -1,5 +1,4 @@
-var url = location.href; // store original
-var status;
+var status, url = location.href; // store original
 // console.log('content.js: ' + url);
 
 if (document.querySelector('#rd_style') === null) {
@@ -82,8 +81,8 @@ function postCheckPage(res) {
   redact(document.body, status);
 
   document.addEventListener('DOMNodeInserted', function (e) {
-    // console.log(e.relatedNode);
-    //e.relatedNode
+
+    // console.log(e.relatedNode);//e.relatedNode
     redact(e.relatedNode, status);
     // console.log("Node change:" + status);
   });
@@ -100,6 +99,7 @@ chrome.runtime.onMessage.addListener(
       });
 
     } else if (message.what === "tabUpdate" && message.url != url) {
+
       // compare updated URL to original URL
       // if URL is programmatically changed, recheck the page
       //sometimes this is not triggered when url is changed?

@@ -1,51 +1,54 @@
 body {
   background-color: white;
   color: #333;
-  width:330px;
-  margin:20px;
-  min-height:150px;
+  width: 330px;
+  margin: 20px;
+  min-height: 150px;
 }
 @font-face {
   font-family: Redacted;
   src: url("fonts/redacted-regular.woff");
 }
-
-}
 img {
- margin-bottom: 1em;
+  margin-bottom: 1em;
 }
-/*server info*/
+
 .serverResult {
   text-align: left;
-  margin:15px 5px -10px;
+  margin: 15px 5px -10px;
   padding-bottom: 5px;
 }
-.buttons{
-  margin-top:10px;
+#credits {
+  font-size: 11px;
+  text-align: right;
+  margin: 15px 5px -10px;
+  padding-bottom: 5px;
+}
+.buttons {
+  margin-top: 10px;
   padding-top: 7px;
   border-top: solid;
-  border-color:#DDD;
+  border-color: #DDD;
   border-width: 1px;
-
 }
-ul{
-  -webkit-margin-before:0px;
+ul {
+  -webkit-margin-before: 0px;
   -webkit-padding-start: 0px;
   margin-bottom: 10px;
 }
-ul li{
-    list-style-type: none;
-    font-size: 16px;
-    line-height: 18px;
-    margin:8px 0;
+ul li {
+  list-style-type: none;
+  font-size: 16px;
+  line-height: 18px;
+  margin: 8px 0;
 }
-ul li .status{
+ul li .status {
   font-size: 14px;
   background-color: gray;
   text-transform: uppercase;
-  float:right;
-  color:white;
-  padding:0 5px;
+  float: right;
+  color: white;
+  padding: 0 5px;
   letter-spacing: .05em;
 }
 ul li .fail {
@@ -58,15 +61,16 @@ ul li .yellow {
   background-color: yellow;
 }
 .serverResult p {
-  color:gray;
+  color: gray;
   font-weight: 200;
 }
 .serverResult p a {
-  color:gray;
+  color: gray;
 }
 .serverResult p a:hover {
-  color:black;
+  color: black;
 }
+
 /*buttons*/
 button {
   margin: 7px 0;
@@ -75,32 +79,31 @@ button {
   font-size: 14px;
   border: 1px;
   border-style: solid;
-  padding:3px 0;
+  padding: 3px 0;
   vertical-align: middle;
 }
 button.modeButtons {
-    width: 50%;
-    margin: 7px -5px;
+  width: 50%;
+  margin: 7px -5px;
 }
-button#disableSearch_button{
+button#disableSearch_button {
   display: none;
 }
 button:disabled {
-    background-color: white;
-    color: gray;
-    border-color: gray;
+  background-color: white;
+  color: gray;
+  border-color: gray;
 }
-button:hover:enabled,button.modeButtons:disabled,.active{
+button:hover:enabled, button.modeButtons:disabled, .active {
   background-color: black;
   color: white;
   border-color: #333;
 }
-button, button.modeButtons.enabled:disabled{
+button, button.modeButtons.enabled:disabled {
   background-color: white;
-  color:#333;
+  color: #333;
   border-color: #333;
 }
-
 a:focus, button:focus {
   outline: 0;
 }

@@ -8,6 +8,7 @@ $(document).ready(function () {
     currentWindow: true
 
   }, function (tabs) {
+
     var currentPageUrl = tabs[0].url,
       currentPageTabId = tabs[0].id;
 
@@ -18,7 +19,7 @@ $(document).ready(function () {
 
     $(".modeButtons").click(modeButtonOnClick);
 
-     $("#recheck_button").click(function() {
+    $("#recheck_button").click(function () {
       recheckButtonOnClick(currentPageTabId, currentPageUrl, renderInterface);
     });
 
@@ -42,13 +43,14 @@ function recheckButtonOnClick(id, url, callback) {
     what: "recheckCurrentPage",
     tabId: id,
     url: url
-  }, function() {
+  }, function () {
     callback(url, id);
   });
 
 }
 
 function whitelistButtonOnClick(current, currentPageUrl) {
+
   var message = $(current).hasClass("resume") ? "resume" : "disable";
   message += $(current).attr("id") === "disableSite_button" ? "Site" : "Search";
 
@@ -64,6 +66,7 @@ function whitelistButtonOnClick(current, currentPageUrl) {
 }
 
 function modeButtonOnClick() {
+
   var isRedact = $(this).attr("id") === "infoMode_button" ? false : true;
 
   chrome.runtime.sendMessage({
@@ -79,6 +82,7 @@ function modeButtonOnClick() {
 }
 
 function renderInterface(currentPageUrl, currentPageTabId) {
+
   // ignore chrome urls
   if (/^chrome:/.test(currentPageUrl)) {
     updateButtons(0, 0);
@@ -86,8 +90,8 @@ function renderInterface(currentPageUrl, currentPageTabId) {
     return;
   }
 
-  //ask background about the blockingstatus
-  //might takes a long time if blockingstatus doesn't already exist
+  // ask background about the blockingstatus
+  // might takes a long time if blockingstatus doesn't already exist
 
   chrome.runtime.sendMessage({
     what: "getBlockingStatus",
@@ -99,7 +103,7 @@ function renderInterface(currentPageUrl, currentPageTabId) {
       updateButtons(currentPageUrl, res);
       displayServerInfo(res);
     } else {
-      //ask again if res is not ready
+      // ask again if res is not ready
       // setInterval(function(){
       //   renderInterface(currentPageUrl, currentPageTabId);
       // }, 1000);
@@ -117,7 +121,7 @@ function displayServerInfo(res) {
     $('ul').hide();
   }
 
-  $(".response .status").attr('class','status');
+  $(".response .status").attr('class', 'status');
 
   if (res.status === "block" && res.servers === undefined) {
     //blocked by searchkeyword
@@ -144,6 +148,7 @@ function displayServerInfo(res) {
 }
 
 function updateMode() {
+
   /****************************
   ask background page,
   whether the page is on Redact or Info Mode
@@ -161,6 +166,7 @@ function updateMode() {
 }
 
 function updateButtons(tabUrl, res) {
+
   var status, trigger;
   if (res) {
     status = res.status;
@@ -172,6 +178,7 @@ function updateButtons(tabUrl, res) {
   if the page is blocked and if it is blocked by search keyword
     show disableSearch button
   ****************************/
+
   if (status === "block" && trigger != undefined) {
     $('#disableSearch_button').show();
   }
@@ -199,7 +206,7 @@ function updateButtons(tabUrl, res) {
         if (whitelist.lists.indexOf("whiteListedSites") !== -1) {
           $('#disableSite_button').text("Resume for this site"); //change i18n class in the future
           $('#disableSite_button').show().addClass("resume");
-          $('.serverResult').hide();//hide server result if the site is disabled
+          $('.serverResult').hide(); //hide server result if the site is disabled
         }
 
         if (whitelist.lists.indexOf("whiteListedSearches") !== -1) {
@@ -210,7 +217,6 @@ function updateButtons(tabUrl, res) {
 
       }
     });
-
   }
 
   /****************************
