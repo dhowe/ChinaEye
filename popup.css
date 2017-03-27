@@ -14,7 +14,6 @@ img {
 }
 .serverResult {
   text-align: left;
-  margin: 15px 5px -10px;
   padding-bottom: 5px;
 }
 #credits {
@@ -84,7 +83,7 @@ button {
 }
 button.modeButtons {
   width: 50%;
-  margin: 7px -5px;
+  margin: 7px -2px;
 }
 button#disableSearch_button {
   display: none;
