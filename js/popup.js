@@ -37,7 +37,7 @@ $(document).ready(function () {
 });
 
 function recheckButtonOnClick(id, url, callback) {
-
+  clearServerInfo();
   chrome.runtime.sendMessage({
     what: "recheckCurrentPage",
     tabId: id,
@@ -111,6 +111,11 @@ function renderInterface(currentPageUrl, currentPageTabId) {
   });
 
 }
+function clearServerInfo() {
+  $(".response .status").html('<img src="img/loader.gif" alt="">');
+  $(".response .status").attr('class','status');
+  $(".info").html("");
+}
 
 function displayServerInfo(res) {
   if (res === undefined)
@@ -119,8 +124,6 @@ function displayServerInfo(res) {
     //error
     $('ul').hide();
   }
-
-  $(".response .status").attr('class', 'status');
 
   if (res.status === "block" && res.servers === undefined) {
     //blocked by searchkeyword
@@ -144,6 +147,7 @@ function displayServerInfo(res) {
   }
 
   $("p.info").text(res.info);
+  $("#recheck_button").prop('disabled', false);
 }
 
 function updateMode() {
