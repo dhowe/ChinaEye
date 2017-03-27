@@ -115,14 +115,15 @@ function clearServerInfo() {
   $(".response .status").html('<img src="img/loader.gif" alt="">');
   $(".response .status").attr('class','status');
   $(".info").html("");
+  $("#recheck_button").prop('disabled', true);
 }
 
 function displayServerInfo(res) {
   if (res === undefined)
     return;
-  if (res && res.status === undefined) {
-    //error
-    $('ul').hide();
+  if (res && (res.status === undefined || res.status === "disabled" )) {
+    //error or disabled
+    $('.serverResult').hide();
   }
 
   if (res.status === "block" && res.servers === undefined) {
