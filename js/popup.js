@@ -101,6 +101,12 @@ function renderInterface(currentPageUrl, currentPageTabId) {
     if (res != undefined) {
       updateButtons(currentPageUrl, res);
       displayServerInfo(res);
+      if(res.trigger != undefined){
+        var keyword = res.trigger.replace(/\+/g, " ");
+        displayKeywordInfo(keyword);
+      }
+        
+
     } else {
       // ask again if res is not ready
       // setInterval(function(){
@@ -111,6 +117,13 @@ function renderInterface(currentPageUrl, currentPageTabId) {
   });
 
 }
+
+function displayKeywordInfo(keyword) {
+  $(".keywordResult").show();
+  $(".blockedKeyword span#keywordArea").html(keyword);
+
+}
+
 function clearServerInfo() {
   $(".response .status").html('<img src="img/loader.gif" alt="">');
   $(".response .status").attr('class','status');
