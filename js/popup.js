@@ -1,4 +1,4 @@
-var ALLPASS = "All servers were able to reach your site. This means that your site should be accessible from within mainland China.";
+var ALLPASS = "All servers were able to reach this site. It should be accessible from within mainland China.";
 
 $(document).ready(function () {
 
@@ -34,7 +34,6 @@ $(document).ready(function () {
     /**********************************************/
 
   });
-
 });
 
 function recheckButtonOnClick(id, url, callback) {

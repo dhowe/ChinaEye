@@ -12,7 +12,6 @@ body {
 img {
   margin-bottom: 1em;
 }
-
 .serverResult {
   text-align: left;
   margin: 15px 5px -10px;
@@ -72,6 +71,7 @@ ul li .yellow {
 }
 
 /*buttons*/
+
 button {
   margin: 7px 0;
   font-family: "Helvetica Neue", Arial, sans-serif;

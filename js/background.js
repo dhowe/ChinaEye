@@ -1,5 +1,5 @@
 var logs = 1,
-  disabled = {},
+  disabled = {}, // unused?
   isRedact = true;
 
 var gfw = 'http://www.greatfirewallofchina.org',
