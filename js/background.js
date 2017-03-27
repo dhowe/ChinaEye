@@ -1,4 +1,4 @@
-var logs = 1,
+var logs = 0,
   disabled = {}, // unused?
   isRedact = true;
 
