@@ -141,7 +141,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         var host = getHostNameFromURL(request.url),
           isSearchEngine = hostRegex.test(host);
         if ((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl)) {
-          console.log(result);
           callback(result);
         }
         else {
