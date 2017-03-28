@@ -1,5 +1,4 @@
 var logs = 0,
-  disabled = {}, // unused?
   isRedact = true;
 
 var gfw = 'http://www.greatfirewallofchina.org',
@@ -24,6 +23,8 @@ chrome.runtime.onInstalled.addListener(function () {
     "whitelistedSearches": [""],
     "tabsBlockingStatus": {}
   });
+
+  injectContentScriptToAllTabs();
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -42,7 +43,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
 
-  // console.log("Active", activeInfo.tabId);
   updateBadge(activeInfo.tabId);
 
 });
@@ -118,7 +118,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
     Cache.clear(key);
     chrome.tabs.get(request.tabId, function (tab) {
-      checkServer(tab, request.url, getHostNameFromURL(request.url), 0, callback);
+      checkPage(tab, null, callback);
     });
 
   } else if (request.what === "setRedact") {
@@ -140,8 +140,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         //Case 2: search engine, same url
         var host = getHostNameFromURL(request.url),
           isSearchEngine = hostRegex.test(host);
-        if ((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl))
+        if ((!isSearchEngine && host === result.host) || (isSearchEngine && request.url === result.tabUrl)) {
           callback(result);
+        }
         else {
           // console.log(request.url,result.tabUrl);
           chrome.tabs.get(request.tabId, function (tab) {
@@ -175,6 +176,38 @@ function normalizeUrl(url) {  // not used?
 
   result = url.replace(/(^\w+:|^)\/\//, '');
   return result;
+}
+
+function injectContentScriptToAllTabs() {
+
+  chrome.tabs.query({
+    currentWindow: true
+  }, function(result) {
+      for (var key in result) {
+          var tab = result[key];
+
+          if (tab.id && tab.url) injectContentScript(tab.id);
+      }
+  });
+
+}
+
+function injectContentScript(tabId) {
+
+    var details = {
+        file: "js/content.js",
+        runAt: "document_idle"
+    };
+
+    chrome.tabs.executeScript(tabId, details);
+}
+
+function reapplyStyle(tabId, res) {
+    logs && console.log("reapplyStyle", tabId, res);
+    chrome.tabs.sendMessage(tabId, {
+        what: "reapplyStyle",
+        res: res
+    });
 }
 
 function reloadAllTabs() {
@@ -347,9 +380,20 @@ function getBlockingStatus(tabId, tabUrl, callback) {
     if (target !== undefined) {
       callback(target);
     } else {
-
+    
       chrome.tabs.get(tabId, function (tab) {
-        checkPage(tab, null, callback);
+        checkPage(tab, null, function(result) {
+          //check content script
+          //if the result doesn't match/ reapplyStyle
+           chrome.tabs.sendMessage(tabId, {what: "isActive"}, function(isActive) {
+            if(result.status === "block" ^ isActive )
+              reapplyStyle(tabId, result);
+            
+            callback(result);
+
+           });
+          
+        });
       });
 
     }
@@ -631,8 +675,9 @@ var getTriggersFromLocalStorage = function (rules) {
 
 }
 
-var onStartup = function () {
+var onExtensionStartup = function () {
   getTriggersFromLocalStorage();
+  injectContentScriptToAllTabs();
 }
 
 var processTriggers = function (rules) {
@@ -780,6 +825,6 @@ if (String.prototype.includes instanceof Function === false) {
 }
 /******************************************************************************/
 
-onStartup();
+onExtensionStartup();
 
 /******************************************************************************/

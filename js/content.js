@@ -98,6 +98,10 @@ chrome.runtime.onMessage.addListener(
         'active': (document.querySelector('#rd_style') != null)
       });
 
+    } else if (message.what === "reapplyStyle") {
+      //for first install/reenabled/status change
+      postCheckPage(message.res);
+
     } else if (message.what === "tabUpdate" && message.url != url) {
 
       // compare updated URL to original URL
