@@ -13,7 +13,11 @@ ChinaEye allows users to experience the web as if living in China. ChinaEye hide
 * Issues:    https://github.com/dhowe/chinaeye/issues
 * FAQ:    https://github.com/dhowe/chinaeye/wiki
 
+<br>
+
 Special thanks to Sally Chen and 'the Great Firewall of China' website
 
 &nbsp;
+
+
 
