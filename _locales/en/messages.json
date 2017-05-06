@@ -1,0 +1,68 @@
+{
+  "extName":{
+    "message":"ChinaEye",
+    "description":"extension name."
+  },
+  "extShortDesc":{
+    "message":"Experience the Web China-style...",
+    "description":"Short description: Experience the Web China-style..."
+  },
+  "popupInfoBlockedKeyword":{
+    "message":"Your search keyword is blocked in mainland China",
+    "description":"Popup: Your search keyword is blocked in mainland China"
+  },
+  "popupServerBeijing":{
+    "message":"Beijing",
+    "description":"Popup: Beijing"
+  },
+  "popupServerInnerMongolia":{
+    "message":"Inner Mongolia",
+    "description":"Popup: Inner Mongolia"
+  },
+  "popupServerHeilongjiang":{
+    "message":"Heilongjiang Province",
+    "description":"Popup: Heilongjiang Province"
+  },
+  "popupServerShenzhen":{
+    "message":"Shenzhen",
+    "description":"Popup: Shenzhen"
+  },
+  "popupServerYunnan":{
+    "message":"Yunnan Province",
+    "description":"Popup: Yunnan Province"
+  },
+  "popupServerInfoFail":{
+    "message":"No servers were able to reach your site. This means that your site is most likely NOT accessible from within mainland China.",
+    "description":"Popup: No servers were able to reach your site. This means that your site is most likely NOT accessible from within mainland China."
+  },
+  "popupServerInfoOk":{
+    "message":"All servers were able to reach this site. It should be accessible from within mainland China.",
+    "description":"Popup: All servers were able to reach this site. It should be accessible from within mainland China."
+  },
+  "popupButtonRecheck":{
+    "message":"Recheck now",
+    "description":"Popup: button - Recheck now"
+  },
+  "popupButtonRedact":{
+    "message":"Redact Mode",
+    "description":"Popup: button - Redact Mode"
+  },
+  "popupButtonInfo":{
+    "message":"Info Mode",
+    "description":"Popup: button - Info Mode"
+  },
+  "popupButtonDisableSite":{
+    "message":"Disable for this site",
+    "description":"Popup: button - Disable for this site"
+  },
+  "popupButtonDisableSearch":{
+    "message":"Disable for this search",
+    "description":"Popup: button - Disable for this search"
+  },
+  "popupCreditsAbout":{
+    "message":"About ChinaEye",
+    "description":"Popup: button - About ChinaEye"
+  }
+
+}
+

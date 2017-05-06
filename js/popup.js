@@ -1,6 +1,7 @@
-var ALLPASS = "All servers were able to reach this site. It should be accessible from within mainland China.";
 
 $(document).ready(function () {
+
+  renderLocales();
 
   chrome.tabs.query({
 
@@ -135,6 +136,21 @@ function clearServerInfo() {
   $(".info").html("");
 }
 
+function renderLocales() {
+    var elems, n, i, elem, text;
+
+    elems = document.querySelectorAll('[data-i18n]');
+    n = elems.length;
+    for ( i = 0; i < n; i++ ) {
+        elem = elems[i];
+        text = chrome.i18n.getMessage(elem.getAttribute('data-i18n'));
+        if ( !text ) {
+            continue;
+        }
+        $(elem).text(text);
+    }
+}
+
 function displayServerInfo(res) {
   if (res === undefined)
     return;
@@ -146,11 +162,13 @@ function displayServerInfo(res) {
   if (res.status === "block" && res.servers === undefined) {
     //blocked by searchkeyword
     $(".response .status").addClass("ok").text("ok");
-    $("p.info").text(ALLPASS);
+    $("p.info").text($("#popupServerInfoOk").text());
+
   } else {
     var count = 0;
     if (res.servers != undefined) {
       for (place in res.servers) {
+        
         var placeId = place.replace(" ", "_"),
           result = res.servers[place];
 
@@ -161,10 +179,13 @@ function displayServerInfo(res) {
         else if (result.length > 0)
           $(".response#" + placeId + " .status").addClass("yellow");
       }
+
     }
   }
 
-  $("p.info").text(res.info);
+  if (res.info && res.info.startsWith("No server")) $("p.info").text($("#popupServerInfoFail").text());
+  else $("p.info").text(res.info);
+
   $("#recheck_button").prop('disabled', false);
 }
 
