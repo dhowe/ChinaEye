@@ -252,7 +252,11 @@ function getSearchKeywordFromURL(url) {
 
   if (result && result.indexOf(" ") > -1)
     result = result.replace(" ", "+");
-
+  
+  //trim extra +
+  if (result.slice(-1) === "+")
+    result = result.slice(0, result.length-1); 
+  
   return result;
 }
 
