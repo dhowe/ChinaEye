@@ -121,6 +121,7 @@ button {
   border-style: solid;
   padding: 3px 0;
   vertical-align: middle;
+  border-radius: 0;
 }
 button.modeButtons {
   width: 50%;
