@@ -1,4 +1,6 @@
 var status, url = location.href; // store original
+var port = chrome.runtime.connect({ name: "mycontentscript" });
+
 // console.log('content.js: ' + url);
 
 if (document.querySelector('#rd_style') === null) {
@@ -7,11 +9,12 @@ if (document.querySelector('#rd_style') === null) {
 }
 
 function sendCheckPage() {
+   
+    port.postMessage({
+        what: "checkPage",
+        location: location
+    });
 
-  chrome.runtime.sendMessage({
-    what: "checkPage",
-    location: location
-  }, postCheckPage);
 }
 
 function postCheckPage(res) {
@@ -88,28 +91,26 @@ function postCheckPage(res) {
   });
 }
 
-chrome.runtime.onMessage.addListener(
+port.onMessage.addListener(
+    function(message, sender, callback) {
+        if (message.what === "isActive") {
+            // console.log("cs-send", 'active:' + (document.querySelector('#rd_style')!= null));
+            callback({
+                'active': (document.querySelector('#rd_style') != null)
+            });
 
-  function (message, sender, callback) {
+        } else if (message.what === "reapplyStyle") {
+            //for first install/reenabled/status change
+            postCheckPage(message.res);
 
-    if (message.what === "isActive") {
-      // console.log("cs-send", 'active:' + (document.querySelector('#rd_style')!= null));
-      callback({
-        'active': (document.querySelector('#rd_style') != null)
-      });
+        } else if (message.what === "tabUpdate" && message.url != url) {
 
-    } else if (message.what === "reapplyStyle") {
-      //for first install/reenabled/status change
-      postCheckPage(message.res);
+            // compare updated URL to original URL
+            // if URL is programmatically changed, recheck the page
+            //sometimes this is not triggered when url is changed?
+            sendCheckPage();
+        } else if (message.what === "result" && message.url === location.href) {
+          postCheckPage(message);
+        }
+});
 
-    } else if (message.what === "tabUpdate" && message.url != url) {
-
-      // compare updated URL to original URL
-      // if URL is programmatically changed, recheck the page
-      //sometimes this is not triggered when url is changed?
-      sendCheckPage();
-    }
-
-    return true;
-
-  });
