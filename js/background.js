@@ -1,6 +1,8 @@
 var logs = 0,
   isRedact = true;
 
+var channel = null;
+
 var gfw = 'http://www.greatfirewallofchina.org',
   triggers = new Set(['zhang+yannan', 'celestial+empire', 'grass+mud+horse', 'grassmudhorse', '草泥']),
   engines = ['^(www\.)*google\.((com\.|co\.|it\.)?([a-z]{2})|com)$', '^(www\.)*bing\.(com)$', 'search\.yahoo\.com$'],
@@ -32,10 +34,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // console.log('onUpdated', tabId, changeInfo, tab);
   if (changeInfo && changeInfo.status == "complete") {
 
-    chrome.tabs.sendMessage(tabId, {
-      what: 'tabUpdate',
-      url: tab.url
-    });
+    if (channel)
+     channel.postMessage({
+         what: 'tabUpdate',
+         url: tab.url
+     });
 
     updateBadge(tabId);
   }
@@ -58,35 +61,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 
   logs && console.log("Request: " + request.what);
 
-  if (request.what === "checkPage") {
-
-    //DISABLED
-    //1.on disabled list
-    //2.chrome page
-
-    isOnWhiteList(request.location.href, function (result) {
-
-      if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
-
-        logs && console.log("The Page is disabled");
-
-        setBlockingStatus(sender.tab.id, request.location.href, request.location.host, {
-          status: 'disabled'
-        });
-
-        callback && callback({
-          status: 'disabled'
-        });
-
-        return;
-
-      } else {
-
-        checkPage(sender.tab, request.location, callback);
-      }
-    });
-
-  } else if (request.what === "disableSite" || request.what === "disableSearch" ||
+  if (request.what === "disableSite" || request.what === "disableSearch" ||
     request.what === "resumeSite" || request.what === "resumeSearch") {
 
     // from popup button
@@ -167,6 +142,53 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   return true;
 });
 
+chrome.runtime.onConnect.addListener(function(port) {
+
+        console.assert("[PORT]" + port.name);
+        channel = port;
+
+        port.onDisconnect.addListener(function() {
+            channel = port = null;
+        });
+
+        port.onMessage.addListener(function(request, port, sendResponse) {
+            var sender = port.sender;
+            if (request.what === "checkPage") {
+
+                //DISABLED
+                //1.on disabled list
+                //2.chrome page
+
+                isOnWhiteList(request.location.href, function(result) {
+
+                    if (result.status === "disabled" || request.location.href.indexOf("chrome://") === 0) {
+
+                        logs && console.log("The Page is disabled");
+
+                        setBlockingStatus(sender.tab.id, request.location.href, request.location.host, {
+                            status: 'disabled'
+                        });
+
+                        port.postMessage({
+                           what: 'result',
+                           url: request.location.href,
+                           status: 'disabled'
+                        });
+
+                        return;
+
+                    } else {
+                        checkPage(sender.tab, request.location);
+                    }
+                });
+
+            }
+
+            return true; 
+
+        });
+
+    });
 /**************************** functions ******************************/
 
 function normalizeUrl(url) {  // not used?
@@ -204,10 +226,12 @@ function injectContentScript(tabId) {
 
 function reapplyStyle(tabId, res) {
     logs && console.log("reapplyStyle", tabId, res);
-    chrome.tabs.sendMessage(tabId, {
-        what: "reapplyStyle",
-        res: res
-    });
+
+    if (channel)
+        channel.postMessage({
+            what: "reapplyStyle",
+            res: res
+        });
 }
 
 function reloadAllTabs() {
@@ -249,8 +273,10 @@ function getSearchKeywordFromURL(url) {
     keyword, result;
   if (keyvals) keyword = keyvals.q || keyvals.p;
   if (keyword) result = decodeURI(keyword.toLowerCase());
+  
+  if (result === undefined) return;
 
-  if (result && result.indexOf(" ") > -1)
+  if (result.indexOf(" ") > -1)
     result = result.replace(" ", "+");
   
   //trim extra +
@@ -469,21 +495,25 @@ var updateBadge = function (tabId) {
 
 /**************************** core ******************************/
 
-var checkServer = function (tab, url, host, count, callback) {
+var checkServer = function (tab, url, host, count) {
 
   var handleResult = function (result) {
 
     Cache.set(host, result, cacheTimeout);
 
     result['redact'] = isRedact;
+    result.what = "result";
+    result.url = url;
     setBlockingStatus(tab.id, url, host, result);
     setIcon(tab.id, result.status, "checkServer");
-    return result;
+    
+    if (channel)
+      channel.postMessage(result);
   }
 
   var onSuccess = function (data) {
 
-    return handleResult(parseResults(data));
+    handleResult(parseResults(data));
   }
 
   //chrome newtab
@@ -505,25 +535,29 @@ var checkServer = function (tab, url, host, count, callback) {
         // console.log(data);
         if (count === 0) {
           logs && console.log("An error occured, Retry");
-          checkServer(tab, url, host, 1, callback);
+          checkServer(tab, url, host, 1);
         }
 
       } else {
-        callback && callback(onSuccess(data));
+        onSuccess(data);
       }
 
     },
     error: function (e) {
-      callback({
-        status: 'error',
-        fails: -1
-      });
+
+    if (channel)
+     channel.postMessage({
+         what: 'result',
+         url: url,
+         status: 'error',
+         fails: -1
+     })
       console.warn(e);
     }
   });
 }
 
-var checkPage = function (tab, location, callback) {
+var checkPage = function (tab, location) {
 
   var url = location ? location.href : tab.url,
     host = location ? location.host : getHostNameFromURL(tab.url);
@@ -549,12 +583,16 @@ var checkPage = function (tab, location, callback) {
           });
 
           setIcon(tab.id, "block", "checkPage");
-
-          callback({
-            status: 'block',
-            trigger: keyword,
-            redact: isRedact
-          });
+           
+          if (channel)
+            channel.postMessage({
+              what:'result',
+              url: location && location.href,
+              id:tab.id,
+              status: 'block',
+              trigger: keyword,
+              redact: isRedact
+            })
 
           return true; // got one, we're done
         }
@@ -562,7 +600,7 @@ var checkPage = function (tab, location, callback) {
     }
   }
 
-  checkServer(tab, url, host, 0, callback);
+  checkServer(tab, url, host);
 }
 
 var parseResults = function (html) {
