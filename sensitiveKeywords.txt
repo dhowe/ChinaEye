@@ -1,9 +1,9 @@
 [China Eye]
-! Version: 20170428
-! The contents of this list are generated from the following repositories: 
+! Version: 20180301
+! The content of this list is generated from the following resources:
 https://github.com/jasonqng/chinese-keywords/
 https://github.com/citizenlab/chat-censorship/
-
+https://docs.google.com/spreadsheets/d/1UTP9MU80r_N5WPhQ5-4AjM0ebW1eMxyDlRe_vaYy9IM/edit#gid=0
 
 !-----------------------Sensitive Keywords-----------------------!
 退出中共|Quit CPC
@@ -17618,4 +17618,974 @@ wisalstudio com|wisalstudio com
 جەننەت ئاشىق|
 بولۇ شەھىد|Become martyr
 15日实行x全市大罢工x灌云x连云港|
-
+天降伟人|
+奴隶制|
+千秋万载|
+五百年|
+1984|
+小熊维尼|
+歪脖子树|
+长生不老|
+不要脸|
+倒行逆施|
+倒车|
+我反对|
+无限续杯|
+吾皇万岁|
+千秋万代|
+一统江湖|
+黄袍加身|
+昏君|
+称帝|
+终身|
+年号|
+复辟|
+元年|
+劝进|
+封禅|
+张勋|
+蔡锷|
+袁世凯|
+袁大头|
+洪宪|
+春晚吐槽|
+春晚+包子|
+春晚+垃圾|
+春晚+恶心|
+春晚+傻逼|
+春晚+烂|
+低端人口|
+1955+2017|1955+2017
+自由＋刘霞|free + Liu Xia
+放＋刘霞|release + Liu Xia
+海葬|sea burial
+没有敌人|Have No Enemies
+包子＋登基|steamed bun + acends the throne
+无所畏惧|fearless 
+诺奖|Nobel prize
+xiao bo|xiao bo
+小波|Xiaobo
+LXB|LXB
+73|73
+七三|73
+王山支山|
+徐晓冬＋封号|Xu Xiaodong + cancelled
+徐晓冬＋太极|Xu Xiaodong + taiqi
+徐晓冬＋打假|Xu Xiaodong + fight faked 
+徐晓冬＋黑幕|Xu Xiaodong + dirty tricks
+华山医院|Huashan Hospital
+提头来见|
+含赵量|
+赵＋核心|Zhao + core
+陕西＋爆炸|Shaanxi + explosion
+榆林＋大爆炸|Yulin + big explosion
+府谷＋大爆炸|Fugu [County] + big explosion
+榆林府谷＋发生爆炸|Yulin Fugu + explosion occurred
+府谷县新民镇＋发生爆炸|Fugu County Xinmin Town + explosion occurred 
+嫖娼之外的另一种可能|another possibility besides soliciting a prostitute
+雷洋案＋引导舆论|Lei Yang case + guide public opinion
+雷洋＋龙锦|Lei Yang + Longquan
+雷洋＋下跪|Lei Yang + kneel
+雷洋＋戴套|Lei Yang + wear a condom
+雷洋＋事件|Lei Yang + incident
+雷洋＋伤痕|Lei Yang + bruise
+雷洋＋陈有西|Lei Yang + Chen Youxi
+硕士雷洋＋嫖娼|Lei Yang, M.S. + solicit a prostitute
+五岳散人|Wuyuesanren
+文革 + 周永康|Cultural Revolution + Zhou Yongkang
+文革＋复辟|Cultural Revolution + restoration
+心腹＋王小洪|trusted aide + Wang Xiaohong
+亲信＋王小洪|trusted aide + Wang Xiaohong
+下一届＋习|next session + Xi
+孙政才＋入常|Sun Zhengcai + join [Politburo Standing] Committee
+邓猫|Deng cat [could mean "Deng Xiaoping and Mao Zedong" or "Deng Xiaoping cat"] 
+中共国家恐怖主义暴行展|exhibit of CCP state's terrorist atrocities
+中共＋言而无信|CCP + go back on one's word
+坦克＋六月|tank + June 
+葛洵|George Ge (Ge Xun)
+陈维明|Chen Weiming
+ZZY（指赵紫阳）|ZZY (Zhao Ziyang)
+WJB（指温家宝）|WJB (Wen Jiabao)
+激情＋视频|passion + video
+5月35日来|May 35 comes
+雷洋＋报案|Lei Yang + report case
+雷洋＋阴部|Lei Yang + private parts
+雷洋＋睾丸|Lei Yang + testicle
+雷洋＋右额部|Lei Yang + right side of forehead
+我要真普选|I want universal suffrage
+文革＋重来|Cultural Revolution + redo
+426＋四二六社论|426 + four two six editorial
+红树林|mangrove
+光天化日＋前中共|light of day + former CCP
+芮成钢|Rui Chenggang
+女婴＋疫苗＋死亡|female infant + vaccine + die
+河北＋女婴＋疫苗|Hebei + female infant + vaccine
+巴拿马|Panama
+八拿马|Banama (Panama)
+banama|banama (Panama)
+运河文件|[Panama] Canal Papers
+拿马文件|[Pa]nama Papers
+洗钱＋姐夫|launder money + brother-in-law
+习＋妹夫|Xi + brother-in-law
+中国高官＋离岸|top Chinese official + offshore
+温氏家族|Wen [Jiabao] clan
+习＋炸|Xi + explode
+万达＋权贵|Wanda + bigwig
+乐视＋跃亭|Leshi + [Jia] Yueting
+June 4|June 4
+5毛＋网评|50 cents + internet commentary
+很淫蕩|very lewd
+Panama|Panama
+总理＋辞职|premier + resign
+总理＋下台|premier + step down
+小琳＋公主|[Li] Xiaolin + princess
+习近平姐夫|Xi Jinping's brother-in-law
+Dengjiagui|Dengjiagui [Deng Jiagui]
+无法跟着你们姓|unable to bear your surname
+余少镭＋辞职|Yu Shaolei + resign
+余少镭＋姓|Yu Shaolei + surname
+上瘾＋禁播|Addicted + forbidden to broadcast
+分享＋太阳的后裔|share + Descendants of the Sun
+十年＋金像|Ten Years + [Hong Kong] Film Awards
+十年＋电影|Ten Years + film
+疫苗＋习|vaccine + Xi
+弹弓|slingshot
+撒币|throw money around
+无官正|Wu Guanzheng [吴官正]
+怡红院|Yihong house (from novel Dream of the Red Chamber)
+春暖花开|flowers bloom in warm spring (i.e. when ban is lifted on publications)
+孟建柱内部谈话＋令完成|Meng Jianzhu internal discussion + Ling Wancheng
+万豪国际|Marriott International
+反习联盟|anti-Xi alliance
+习＋老总|Xi + officer
+大大习|Dada Xi [Jinping]
+贾葭＋公开信|Jia Jia + open letter
+贾佳＋北京市公安局|Jia Jia + Beijing Public Security Bureau
+贾葭＋赴港＋失踪|Jia Jia + go to Hong Kong + missing
+贾佳＋机场分局|Jia Jia + airport branch office [of the PSB]
+燕薪＋贾葭＋失踪|Yan Xin + Jia Jia + missing
+欧阳洪亮＋无界＋失踪|Ouyang Hongliang + Wujie + missing
+欧阳洪亮＋失联|Ouyang Hongliang + lose contact
+无界新闻＋失联|Wujie News [Watching] + lose contact
+阿里巴巴＋无界新闻＋公开信|Alibaba + Wujie News [Watching] + open letter
+黑客攻击＋公开信|hack + open letter
+习＋辞职＋上位|Xi + resign + top seat
+习近平＋辞职|Xi Jinping + resign
+习＋公开信|Xi + open letter
+习＋无界新闻|Xi + Wujie News [Watching]
+（习）近平＋辞去|(Xi) Jinping + resign
+习＋辞去＋领导职务|Xi + resign + leadership role
+辞去＋党和国家＋领导职务|resign + Party and state + leadership role
+两会＋段子|Two Sessions + quote
+周方＋网络主管部门|Zhou Fang + Internet controlling body
+龙煤|Longmei
+央视＋黑龙江|CCTV + Heilongjiang
+任志强＋质疑习|Ren Zhiqiang + challenge Xi
+朱征夫＋认罪|Zhu Zhengfu + admit guilt
+坏事变好事|bad deed becomes good deed
+罢免李|recall Li [Hongli]
+毛尸|Mao corpse
+共党＋惨|communist party + brutal
+北京＋暴力恐怖|Beijing + violence and terror
+(六)四＋镇压|(six) four + suppress
+性吧|sex bar
+领导人＋胸章|leader + badge
+习＋胸章|Xi + badge
+高层＋分歧严重|high-level + disagree seriously
+政治局 + 财产|Politburo + assets
+蔡咏梅|Tsoi Wing-mui
+周恩来＋秘密情感|Zhou Enlai + secret feelings
+周恩来＋同性（恋）|Zhou Enlai + same-sex (love) [homosexual]
+周恩来＋gay|Zhou Enlai + gay
+习头|Xi head
+劝进表|entreaty to take power
+Weapon|Weapon
+习五一|Xi Wuyi
+南都|Southern Metropolis [News]
+任志强＋挑战习|Ren Zhiqiang + challenge Xi
+军变|army change
+昌平法官 |Changping judge
+西藏人民议会|Parliament of the Central Tibetan Administration
+代开发票|acting invoice
+夜色论坛|dark night forum
+无码 + 视频|unpixellated + video
+老炮＋任志强反党|Old Cannon + Ren Zhiqiang opposes the Party
+习＋蔡霞|Xi + Cai Xia
+砸共产党的锅|smash the Communist Party's pot
+红太阳帝国|Empire of the Red Sun
+Liu＋Xiaobo |Liu + Xiaobo
+色图|color photo (porn)
+淫情|lusty feeling (erotica)
+春晚＋四个全面|CCTV Gala + Four Comprehensives
+春晚＋赵家|CCTV Gala + Zhao family
+春晚＋主旋律|CCTV Gala + theme
+春晚＋红领巾|CCTV Gala + Young Pioneer scarf
+春晚＋文革|CCTV Gala + Cultural Revolution
+春晚＋100（分）|CCTV Gala + 100 (points)
+春晚＋马屁|CCTV Gala + horse butt
+春晚＋老毕|CCTV Gala + Old Bi [Fujian]
+春晚＋赵本山|CCTV Gala + Zhao Benshan
+春晚＋彭|CCTV Gala + Peng
+旺角＋骚乱|Mong Kok + riot
+鱼蛋革命|Fishball Revolution
+香港＋骚乱|Hong Kong + riot
+习家人 |Xi family
+习领导|Xi leader
+习＋皇帝|Xi + emperor
+习＋女人|Xi + woman
+习＋氏|Xi + clan
+党政军集权 |centralization of party, government, and military
+屠杀＋四|massacre + four
+情色小说|erotic novel
+春晚＋包子|CCTV Gala + steamed bun
+春晚＋政治|CCTV Gala + politics
+春晚＋洗脑|CCTV Gala + brainwash
+春晚＋献媚|CCTV Gala + suck up
+春晚＋一百分|CCTV Gala + one hundred points
+春晚＋新闻联播|CCTV Gala + News Simulcast
+春晚＋六小龄童|CCTV Gala + Liu Xiao Ling Tong
+习难堪|Xi Unbearable
+习＋情人|Xi + lover
+冤情＋中共|facts of injustice + CCP
+拍肩迷药|shoulder-pat hypnosis (scam)
+藏人抗议|Tibetan protest
+大撒币|big spender
+习 + 挖坑|Xi + dig a hole
+刁core|Xi core
+梦雪|Mengxue
+宋祖英＋江|Song Zuying + Jiang [Zemin]
+我冷＋央视记者|I'm cold + CCTV reporter
+撸色|Sir Lu [Wei]
+肖钢＋辞职|Xiao Gang + resign
+肖钢＋下台|Xiao Gang + step down
+自由写作奖|Freedom to Write Award
+死亡＋党|dead + Party
+习＋黑材料|Xi + black materials
+xi禁评|xi Forbidden to Criticize (Xi Jinping)
+洗禁评|Wash Forbidden to Criticize (Xi Jinping)
+吸金瓶|Breath Golden Bottle (Xi Jinping)
+色情视频|porn video
+周子瑜|Chou Tzu-yu
+台湾大选|Taiwan election
+总统大选|presidential election
+黄安|Huang An
+习＋朋友圈|Xi + friends circle
+习＋秘书|Xi + secretary
+习 + 爷|Xi + father
+习＋小圈子|Xi + clique
+周永康＋曾庆红|Zhou Yongkang + Zeng Qinghong
+曾飞洋＋被捕|Zeng Feiyang + be arrested
+曾飞洋＋服务部|Zeng Feiyang + be arrested
+鲁部长|Minister Lu
+7条微博|7 Weibo posts
+二中院 + 聚集|[Beijing] No. 2 Intermediate Court + assemble
+中国军火|Chinese military munitions
+三里屯 + 威胁|Sanlitun + threat
+淫秽（网）|obscene (web)
+色情网（站）|porn web(site)
+视频 + AV|video + AV
+YouTube + AV|YouTube + AV
+赵家人|Zhao family member
+赵王回车|King Zhao returns the car
+习夶|Xi Bi 
+刁＋大|tricky + big
+习＋矛盾信号|Xi + mixed signals
+三里屯＋恐怖袭击|Sanlitun + terrorist attack
+圣诞＋恐怖袭击|Christmas + terrorist attack
+局域网大会|LAN Conference
+七不准|seven forbiddens
+习 + 三人|Xi + three people
+上街 + 胡|take to streets + Hu
+薄 + 喊冤|Bo + declare innocence
+股灾 + (刘)云山|stock market crash + [Liu] Yunshan
+令计划 + 运城 |Ling Jihua + Yuncheng
+明镜集团 + 陈小平|Mingjing Group + Chen Xiaoping
+彭清华|Peng Qinghua
+FreeTibet|FreeTibet
+当知项欠|Dhondup Wangchen
+优衣酷|Uniqlo
+沙甸|Shadian
+操 + 逼|fuck + cunt
+天朝＋谷歌|Celestial Kingdom + Google
+天朝＋Google|Celestial Kingdom + Google
+资源＋微信|resource + WeChat
+计划生育＋人权|family planning + human rights
+唐映红＋政策|Tang Yinghong + policy
+秘书帮|secretary gang
+习党|Xi Party
+习＋名片|Xi + business card
+习＋独裁|Xi + dictatorship
+薄习|Bo [Xilai] Xi [Jinping]
+Xifac|Xifac
+jwxi|jwxi
+bjxi|bjxi
+w1xi|w1xi
+fourthwave（第四波民主化浪潮）|fourthwave [democratization]
+拜城＋袭击|Baicheng + raid
+拜城＋煤矿|Baicheng + coal mine
+死亡＋阿克苏|die + Aksu
+习近平＋拦车|Xi Jinping + stop car
+(习)近平＋极权|[Xi] Jinping + totalitarianism
+习上任|Xi predecessor
+习＋庆丰|Xi + Qingfeng
+习＋前任职|Xi + previous position
+习＋史书记载|Xi + historical record
+习＋监控|Xi + inspect and control
+习＋李鸿章|Xi + Li Hongzhang
+(习)近平＋得罪|[Xi] Jinping + totalitarianism
+薄＋岳飞|Bo [Xilai] + Yue Fei
+毛＋畜生|Mao + beast
+哈达＋剥夺政治权利|Hada + deprive of political rights
+哈达＋绑架|Hada + kidnap
+哈达＋新娜|Hada + Xinna
+内蒙古＋分裂|Inner Mongolia + split
+610办＋改组|610 Office + reorganize
+杀＋证监会|kill + Securities Regulatory Commission
+访民＋拦车|petitioner + stop car
+访民＋赴英|petitioner + go to England
+名照＋调查|famous photo + investigate
+围困 + 垃圾焚烧|beseige + trash incineration
+博狗|Dog Bo [Xilai]
+孟群 |Meng Qun
+葛丽芳＋车队|Ge Lifang + motorcade
+访民＋美国  |petitioners + U.S.
+习帝王|Emperor Xi
+习＋女儿|Xi + daughter
+习＋肖建华|Xi + Xiao Jianhua
+习近平＋股份|Xi Jinping + stock
+包子＋中国梦|steamed bun + Chinese dream
+包子＋专制|steamed bun + autocracy
+610办＋令计划|610 Office + Ling Jihua
+610办＋中共|610 Office + Chinese Communist Party
+外交部 + 江|Ministry of Foreign Affairs + Jiang
+蛤|toad
+长者|elder
+续命|prolong life
+excited|excited
+胡＋帕金森|Hu + Parkinson's
+习＋前妻|Xi + former wife
+习＋柯小明|Xi + Ke Xiaoming
+习＋离婚|Xi + divorce
+习＋二婚|Xi + second marriage
+柯小明＋前妻|Ke Xiaoming + former wife
+刘部长|Minister Liu
+张育军|Zhang Yujun
+我为长者续一秒|for the elder [Jiang Zemin], I'll continue for another second
+长者续命|elder continues to live
+江＋去世|Jiang + pass away
+习＋令徐郭  |Xi + Ling [Jihua] Xu [Caihou] Guo [Boxiong]
+习大大＋北戴河 |Daddy Xi + Beidaihe
+李克强＋黑锅|Li Keqiang + bad reputation
+水工 |irrigation works (ref. to Jiang Zemin)
+彭丽媛＋小三|Peng Liyuan + mistress
+彭妈妈|Mama Peng
+彭将军|General Peng
+彭母|Mother Peng
+习氏|Xi clan
+习＋舅舅|Xi + uncle
+老大＋习|elder + Xi
+习泽东|Xi Zedong
+猪＋习|pig + Xi
+习＋成功|Xi + succeed
+习博士|Dr. Xi [Ph.D.]
+郭声琨＋妻子 |Guo Shengkun + wife
+郭声琨＋老婆|Guo Shengkun + wife
+投资＋温家 |invest + Wen family
+总理＋财富|premier (of country) + wealth
+炸＋国务院|blow up  + State Council
+无能＋公安|incompetent + public security
+家长＋教育部|parent + Ministry of Education
+学生＋1989|student + 1989
+人权＋计划|human rights + plan
+左轮手枪|revolver
+太阳城|Sun City
+骚浪|loose (of women)
+北戴河＋敏感|Beidaihe + sensitive
+反对＋冬奥会|oppose + Winter Olympics
+fqrouter2|fqrouter2
+被＋黑历史|[passive marker] + black history
+蔡耀昌|Cai Yaochang
+周世峰＋律师|Zhou Shifeng + lawyer
+红色权贵|red nobility
+江世俊|Jiang Shijun
+康＋李春城|[Zhou Yong]kang + Li Chuncheng
+(吴)官正＋王林|[Wu] Guanzheng + Wang Lin
+厅长＋王林|department chief + Wang Lin
+Wu er kai xi|Wu'erkaixi
+习近平＋坦克|Xi Jinping + tank
+535|May 35th (June 4th)
+高清＋无码|HD + no pixellation
+周世锋＋失联|Zhou Shifen + lose contact
+北京锋锐律师事务所|Beijing Fengrui Law Firm
+刘四新＋被抓|Liu Sixin + be caught
+王宇＋被抓|Wang Yu + be caught
+声援王宇|support Wang Yu
+拘留＋翟岩民|detain + Zhai Yanmin
+股票＋跳楼|stock + plummet
+sb＋政府|sb [shabi 傻逼, stupid] government
+圣战＋Jihad|holy war + jihad
+穆畜|Muslim beasts
+生日＋尊者 |birthday + venerable one [Dalai Lama]
+爆炸＋东长安街|explode + East Chang'an Avenue
+爆炸＋CBD|exlode + CBD
+四万亿＋温|four trillion + Wen [Jiabao]
+永康＋自辩书|[Zhou] Yongkang + Apology
+吴小辉|Wu Xiaohui
+外籍＋习|foreign nationality + Xi [Jinping]
+习＋汪|Xi [Jinping] + Wang
+明泽|[Xi] Mingze
+午3时＋维园|3 p.m. + Victoria Park
+(许)志永＋被抓|[Xu] Zhiyong + be caught
+和田＋皮山|Hetian + Pishan
+喀什＋击毙|Kashgar + shoot dead
+喀什＋暴恐|Kashgar + violent terrorist [attack]
+7枚爆炸装置＋3把大刀|7 explosive devices + 3 large knives
+翟岩民＋维权|Zhai Yanming + rights defense (weiquan)
+带鱼＋公知|cutlassfish + public intellectual
+带鱼＋包子|cutlassfish + steamed dumpling (baozi)
+带鱼＋庆丰|cutlassfish + Qingfeng [Steamed Bun Shop]
+姓习的|surnamed Xi
+宇宙真理＋党|truth of the universe + [political] party
+习近平＋彭家声|Xi Jinping + Peng family reputation
+习近平＋镇压|Xi Jinping + suppress
+央视网＋重大政治差错|CCTV net (website) + grave political mistake
+(李)小琳＋电|[Li] Xiaolin + power
+周永康＋反党|Zhou Yongkang + anti-Party
+刘延东＋女婿|Liu Yandong + son-in-law
+贵州＋喊冤|Guizhou + call out grievance
+拦轿|stop traffic
+黎亮＋情人|Li Liang + lover
+黎亮＋三峡|Li Liang + Three Gorges
+清君侧|rid emperor of his close attendants
+王岐山＋摩根|Wang Qishan + [JP] Morgan
+摩根＋中纪委|[JP] Morgan + Central Commission for Discipline Inspection
+美国证券交易委员会＋通信记录|U.S. Securities and Exchange Commission + communication record
+缅甸军政府＋习近平|military government of Burma + Xi Jinping
+袁部长|Minister Yuan [Guiren]
+政治体制＋颜色革命|political system + color revolution
+政治局＋被免职|Politburo + be removed from office
+周永康＋视察|Zhou Yongkang + inspect
+周永康＋死刑|Zhou Yongkang + death sentence
+周永康＋双规|Zhou Yongkang + dual designation (shuanggui)
+周永康＋被抓|Zhou Yongkang + be caught
+(周)永康＋蒋洁敏|[Zhou] Yongkang + Jiang Jiemin
+6+si|6+si [six + four]
+631日|631 day
+liu4|liu4 [six4]
+陆＋肆|six + four
+6/4/2015|6/4/2015
+26years|26years
+26年|26 years
+26周年|26th anniversary
+二十六年|twenty-six years
+二十六周年|twenty-sixth anniversary
+64＋屠杀|64 + massacre
+64＋开枪|64 + open fire
+TAM（“天安门”拼音缩写）|TAM [Tian An Men]
+习近平＋言而无信|Xi Jinping + go back on one's word
+coca|coca
+刁＋特勒|Diao + Tele
+打压＋大V|suppress + Big V
+中央统战部部长|head of the United Front Work Department
+藏人＋住旅店被拒|Tibetan + be refused hotel booking
+（习）近平＋暗杀|[Xi] Jinping + assassinate
+习＋情妇|Xi + mistress
+习金瓶|Xi Golden Vase [Xi Jinping]
+习近平＋罪状|Xi Jinping + charges [in indictment]
+江＋央视|Jiang [Zemin] + CCTV
+江＋博物馆|Jiang [Zemin] + museum
+李源潮＋妻子|Li Yuanchao + wife
+供匪|supply bandits [sounds like "communist bandits']
+贾晓霞|Jia Xiaoxia (Margaret Jia)
+林昭＋秘密枪决|Lin Zhao + secret execution by firing squad
+林昭＋祭日|Lin Zhao + memorial day
+子弹|bullet
+党争|struggle among political factions
+权力交接|transfer of power
+老虎＋浮出水面|tiger + rise to the surface
+习近平＋曾庆红|Xi Jinping + Zeng Qinghong
+王健林＋权贵|Wang Jianlin + bigwig
+万达股份＋习近平|Wanda shares + Xi Jinping
+习＋姐姐|Xi + older sister
+李锐＋海关|Li Rui + customs
+鲍樸|Bao Pu
+毛主席像＋泼墨|Mao Zedong's portrait + splash ink
+习近平＋果敢|Xi Jinping + courageous
+公民＋审判|citizen + trial
+中国＋最穷国家|China + poorest country
+武嵘嵘＋女权＋人士|Wu Rongrong + women's rights + personage
+郑楚然＋女权＋人|Zheng Churan + women's rights + person
+李婷婷＋女权＋人|Li Tingting + women's rights + person
+韦婷婷＋女权＋人|Wei Tingting + women's rights + person
+王曼＋女权|Wang Man + women's rights
+武嵘嵘＋释放|Wu Rongrong + release
+郑楚然＋释放|Zheng Churan + release
+李婷婷＋释放|Li Tingting + release
+韦婷婷＋释放|Wei Tingting + release
+王曼＋释放|Wang Man + women's rights
+张越＋周永康|Zhang Yue + Zhou Yongkang
+明镜＋周永康|MIngjiang + Zhou Yongkang
+2号专案组|number 2 investigating team
+三角政治同盟|three-point political alliance
+曾山＋邓六金|Zeng Shan + Deng Liujin
+习近平＋清算|Xi Jinping + settle accounts
+习近平＋智囊|Xi Jinping + wise advisor
+九门提督|Commander of the Nine Gates
+傅震华|Fu Zhenhua (Fu Zhenghua)
+习＋胡舒立|Xi + Hu Shuli
+习＋王小洪|Xi + Wang Xiaohong
+（习）近平＋权力斗争|[Xi] Jinping + power struggle
+胡＋家史|Hu + family history
+中央警卫局＋缴械|Central Security Bureau + surrender
+李友＋日本豪宅|Li You + Japan mansion
+习近平时代|Xi Jinping era
+带走＋女权|take away + women's rights [activists]
+郑楚然＋被带走|Zheng Churan + taken away
+李麦子＋被带走|Li Maizi + taken away
+韦婷婷＋被带走|Wei Tingting + taken away
+王曼＋被带走|Wang Man + taken away
+拜城＋警察|Baicheng [County] + police
+皮山＋爆炸|Pishan [County] + explosion
+喀什＋出事|Kashgar + something happened
+习＋之江新军|Xi + new army of Zhijiang
+之江新军＋闽江旧部|new army of Zhijiang + former troops of the Min River
+丁薛祥|Ding Xuexiang
+习＋微薄|Xi + meager (weibo)
+庆亲王|Prince Qing of First Rank
+庆＋老虎|Qing + tiger
+江＋才厚|Jiang [Zemin] + [Xu] Caihou
+剿匪不力|insufficiently suppress bandits (Chiang Kai-shek)
+朱榕基|Zhu Rongji
+朱熔基|Zhu Rongji
+中国＋网民＋自由|China + netizens + freedom
+香港＋水货客＋示威|Hong Kong + parallel traders + demonstration
+习近平＋戈尔巴乔夫|Xi Jinping + Gorbachev
+庆丰三年|third year of Qingfeng's reign
+庆丰二年|second year of Qingfeng's reign
+庆丰元年|first year of Qingfeng's reign
+习某|a certain Xi [Jinping]
+(谷)俊山＋2000万|[Gu] Junshen + 20 million
+才厚＋儿子|[Xu] Caihou + son
+袁贵人|Yuan Guiren
+曾庆洪|Zeng Qinghong
+习＋评价＋江|Xi [Jinping] + evaluate + Jiang [Zemin]
+维族＋砍|Uyghur + chop
+电力一姐|first lady of power (Li Xiaolin)
+天安门＋举牌|Tiananmen + hold up a sign
+行为艺术|performance art
+穹顶之下|Under the Dome
+雾霾＋APEC|smog + APEC
+曾庆(红)＋亲王|Zeng Qing[hong] + Prince Qing
+(曾)庆红＋庆亲王|[Zeng] Qinghong + Prince Qing of First Rank
+曾伟＋澳大利亚|Zeng Wei + Australia
+(曾)庆红＋(胡)锦涛|[Zeng] Qinghong + [Hu] Jintao
+邢运明|Xing Yunming
+江＋贪腐|Jiang [Zemin] + corrupt
+接班人＋胡春华|successor + Hu Junhua
+习＋称帝|Xi + call [him] emperor
+刁包子|Steamed Bun Diao (Xi Jinping)
+彭＋解放军艺术|Peng [Liyuan] + PLA Arts [College]
+邓三科|Deng Three-science (Deng Xiaoping Theory, Three Represents, Scientific Development Outlook)
+军管|military control
+袁＋上百亿|Yuan + over ten billion
+袁＋(儿)子＋教材|Yuan + son + teaching material
+高严＋猎狐行动|Gao Yan + Operation Fox Hunt
+星际赌场|StarWorld casino
+习老|Xi old
+习＋信号|Xi + signal
+红朝太祖|first emperor of the red dynasty (Mao Zedong)
+zhou＋带鱼|zhou + cutlassfish
+周黛玉|Zhou Daiyu
+今年＋2015年|this year + 2015
+纳税人的钱哪去了|where has the taxpayer's money gone
+腐败＋震惊|corruption + shock
+不雅|indecency
+刁犬犬|Diao Quanquan (Xi Jinping)
+习＋包子|Xi + steamed bun
+习＋请求|Xi + request
+黑黑习|a certain Xi
+港媒＋大老虎|Hong Kong media + big tiger
+王敏＋山东帮总管|Wang Min + leader of Shandong gang
+永康＋沈冰|Yongkang + Shen Bing
+永康＋儿子|Yongkang + son
+永康＋薄|Yongkang + Bo
+南充＋贿选|Nanchong + election bribery
+杨建华|Yang Jianhua
+二奸二(假)|two betrayals and two falsehoods
+江氏＋黑幕|Jiang clan + dirty secrets
+大荤君|Da Hun Jun
+贾廷安被抓|Jia Ting'an nabbed
+贾廷安被调查|Jia Ting’an under investigation
+祖英＋豪宅|Zuying + mansion
+周＋带鱼|Zhou + cutlassfish
+寻衅滋事|picking quarrels and provoking troubles
+江＋现身|Jiang + shows himself
+江绵恒＋双规|Jiang Mianheng + shuanggui
+习＋马云|Xi + Jack Ma
+习＋拉帮结派|Xi + cliques
+习＋微信|Xi + WeChat
+（习）近平＋大秘|(Xi) Jinping + big secret
+郭玉闪＋寻衅滋事|Guo Yushan + picking quarrels and provoking troubles
+撑＋学生|support + students
+zhanzhong|zhanzhong (Occupy Central)
+香港＋黑衣|Hong Kong + black clothes
+香港＋平反|Hong Kong + redress
+香港＋防暴警察|Hong Kong + riot police
+习近平＋武力清场|Xi Jinping + clear space with armed force
+三穗＋武警|Sansui + armed police
+三穗＋警察|Sansui + police
+三穗＋游行|Sansui + march
+邓＋女婿|Deng [Xiaoping] + son-in-law
+蔡明照|Cai Mingzhao
+（芮）成钢＋（王）岐山|[Rui] Chenggang + [Wang] Qishan
+毒菜政府（即“独裁”政府）|poisoned vegetable government
+告别央视＋这个时代的一些真话|farewell to CCTV + some true words for this era
+香港＋抗议＋人大|Hong Kong + protest + People’s Congress
+umbrella revolution|umbrella revolution
+撑起雨伞|open umbrella
+雨遮革命|awning revolution
+香港觉醒|Hong Kong wake up
+敢想不敢说|dare to think not dare to say
+站中|stand Central
+占领＋旺角|occupy + Mong Kok
+占领＋铜锣湾|occupy + Causeway Bay
+包围＋政总|surround + central government [offices]
+冲击＋政总| impact + central government [offices]
+旺角集会|Mong Kok assembly
+张秀贤|Tommy Cheung Sau-yin
+王光伟＋阶级斗争|great glorious and correct + class struggle
+雨伞革命|umbrella revolution
+遮打革命|Chater revolution
+伞花革命|umbrella flower revolution
+谁还未发声|Do You Hear the People Sing
+公民提名|citizen nomination
+添马公园|Tamar Park
+香港＋清场|Hong Kong + clear the square
+示威＋胡（椒）|demonstrate + hu(jiao)
+必须旗帜鲜明地反对动乱|It Is Necessary to Take a Clear-cut Stand Against Disturbances
+香港＋学生|Hong Kong + students
+香港＋罢课|Hong Kong + student strike
+香港＋催泪弹|Hong Kong + tear gas canister
+香港＋开枪|Hong Kong + open fire
+香港＋抗命|Hong Kong + disobery orders
+香港人＋上街|Hong Kongers + take to the streets
+公民抗命|citizens disobey orders
+公民广场|citizen plaza
+占中|Occupy Central
+占领＋中环|occupy + Central
+占领＋金钟|occupy + Admiralty
+黄之锋|Joshua Wong
+黄丝带|yellow ribbon
+香港加油|go Hong Kong
+香港挺住|Hong Kong stand firm
+声援＋香港|support + Hong Kong
+支持香港|support Hong Kong
+今天我们都是香港人|today we are all Hong Kongers
+instagram＋屏蔽|Instagram + block
+instagram＋被墙|Instagram + be "walled"
+819讲话|August 19 speech
+我们愿意承受不公|we are willing to endure injustice
+因为正义不会迟到|because justice will not be late
+炎黄春秋＋主管单位|Yanhuang Chunqiu + governing body
+炎黄春秋＋独立|Yanhuang Chunqiu + independence
+芮成钢＋令计划|Rui Chenggang + Ling Jihua
+习＋谷|Xi + Gu
+废习|waste Xi
+老人干政|old man messing around in politics (i.e. Jiang Zemin)
+总政＋知情干部|[PLA] General Political Department + cadres in the know
+刘远东|Liu Yuandong
+梅妍凌|Mei Yanling
+梅道德|Moral Mei
+刘云删|Liu Yundelete
+军中最爱|armed forces' most beloved
+邓孙子|Grandson Deng [Xiaoping]
+邓小平之孙|Deng Xiaoping's grandson
+于浩宸|Yu Haochen
+习派|Xi faction
+小习|Little Xi
+送瘟神|send away the plague god
+王波＋叙利亚|Wang Bo + Syria
+王波＋圣战|Wang Bo + jihad
+马元＋舅舅|Ma Yuan + uncle
+央视主播|CCTV anchor
+江＋金蟾|Jiang + golden toad
+膀胱癌＋301医院|bladder cancer + Hospital 301
+自由微博|FreeWeibo
+Freeweibo|Freeweibo
+许志永＋新|Xu Zhiyong + New [Citizens Movement]
+（许）志永＋公民|(Xu) Zhiyong + citizens
+XZY|XZY
+许ZY|Xu ZY
+习＋老师|Xi + teacher
+习＋涉嫌|Xi + be a suspect
+周永康＋法办|Zhou Yongkang + punish according to law
+中共第一贪|CCP's most corrupt
+薄＋中共高层|Bo + CCP high level
+薄＋急先锋|Bo + daring vanguard
+民有钱＋你贪|the people have money + you are corrupt
+民有女＋你奸|the people have women + you rape
+民有房＋你拆|the people have homes + you tear down
+民有话＋你删|the people have words + you delete
+民有难＋你演|the people have troubles + you perform
+民有冤＋你关|the people have grievances + you lock [them] up
+民有事＋你推|the people have issues + you reject
+民有疑＋你编|the people have doubts + you edit
+APEC会议＋反腐|APEC Summit + anti-corruption
+刘汉＋永康|Liu Han + [Zhou] Yongkang
+苹果日报＋习|Apple Daily + Xi [Jinping]
+新皇帝 |new emperor
+习＋上位|Xi + top seat
+习＋首长|Xi + chief
+薄＋红二代|Bo [Xilai] + red second generation
+（李）克强＋激光笔|(Li) Keqiang + laser pointer
+徐才厚＋刘源|Xu Caihou + Liu Yuan
+令计划＋运城|Ling Jihua + Yuncheng
+李伟东＋习近平|Li Weidong + Xi Jinping
+胡苏平|Hu Suping
+邓家族|Deng family
+温（家宝）＋贪污|Wen (Jiabao) + corruption
+黑衣＋律师|black clothes + lawyers
+非法传唤|illegal subpoena
+财产公开＋人大代表|asset disclosure + NPC delegates
+网络监控|Internet surveillance
+网宣办|Internet Propaganda Office
+新疆＋管制|Xinjiang + control
+退d|leave the party (i.e. CCP)
+阳光卫视＋陈平|Sun Satellite Television + Chen Ping
+力远超|Li Yuanchao
+陈元＋阿里巴巴|Chen Yuan + Alibaba
+王军＋阿里|Wang Jun + Ali
+国开行＋阿里巴巴|China Development Bank + Alibaba
+（刘）云山＋阿里巴巴|[Liu] Yunshan + Alibaba
+yunshan＋阿里|[Liu] Yunshan + Ali
+孙子＋阿里巴巴|grandson + Alibaba
+纽约时报＋阿里巴巴|New York Times + Alibaba
+江志成＋路透社|Jiang Zhicheng + Reuters
+江志成＋孙子|Jiang Zhicheng + grandson
+江志成＋私募|Jiang Zhicheng + private equity
+当今皇上|reigning emperor
+反腐＋体制|anti-corruption + system
+团系|tuanxi (tuanpai)
+邓小平＋坦克|Deng Xiaoping + tank
+四环＋枪声|Fourth Ring [Road] + gunfire
+找肾源|find source of kidneys
+提供肾源|provide source of kidneys
+Tohti|[Ilham] Tohti
+保守派|conservative party
+克强＋艾滋|[Li] Keqiang + AIDS
+总理＋艾滋|premier + AIDS
+窑洞党|cave party
+爱国家不等于爱朝廷|love of country is not the same as love of government
+郭美美＋刘|Guo Meimei + Liu
+郭美美＋云山|Guo Meimei + Yunshan
+郭美美＋后台|Guo Meimei + backstage [supporter]
+郭美美＋大老虎|Guo Meimei + big tiger
+郭美美＋领导|Guo Meimei + leader
+13+命案|13 + homicide case
+29+情妇|29 + mistress
+最高法＋腐败|Supreme Court + corrupt
+华数＋敏感画面|Wasu + sensitive screen
+华数＋被黑|Wasu + be hacked
+温州有线＋敏感画面|Wenzhou cable + sensitive screen
+吴志明＋江|Wu Zhiming + Jiang
+抹黑习|disgrace Xi
+机顶盒＋被黑|set-top box + be hacked
+机顶盒＋黑客|set-top box + hacker
+机顶盒＋入侵|set-top box + infiltrate
+有线电视＋被黑|cable TV + be hacked
+有线电视＋黑客|cable TV + hacker
+有线电视＋入侵|cable TV + infiltrate
+温州电视＋被黑|Wenzhou TV + be hacked
+温州电视＋黑客|Wenzhou TV + hacker
+温州电视＋入侵|Wenzhou TV + infiltrate
+周永康＋老巢|Zhou Yongkang + rat
+周（永）康＋温|Zhou (Yong)kang + Wen [Jiabao]
+JZM|JZM (Jiang Zemin)
+JZ民|JZmin (Jiang Zemin)
+江Z民|Jiang Zmin
+周永康家族|Zhou Yongkang Family
+康＋方便面|Kang + instant noodles
+康师傅＋老虎|Master Kang + tiger
+蛤蟆（复测）|toad (retested)
+G将军＋出逃|General G + flee
+阿里巴巴＋红二代|Alibaba + red second generation
+阿里巴巴＋江（志成）|Alibaba + (Alvin) Jiang
+令JH|Ling JH
+贾庆L|Jia QingL
+Citizens+Movement|Citizens+Movement
+匕首 |dagger
+令计划＋大内总管| imperial palace housekeeper
+令计（划）＋苏荣|Ling Ji(hua)+Su Rong
+苏荣＋江泽（民）|Su Rong+Jiang Ze(min)
+苏荣＋（曾）庆红|Su Rong+(Zeng) Qinghong
+曾庆红＋监视居住|Zeng Qinghong+reseidential surveillance
+群发＋短信＋设备|crowd sent+text message+equipment
+解放军＋中越边境集结|PLA+mass at China-Vietnam border
+Jonathan Mirsky＋网站|Jonathan Mirsky+website
+Facebook+办事处|Facebook+office
+Facebook+办公室|Facebook+office
+H漫|H comics (hentai)
+PZQ|PZQ
+（习近平）讲话精神研究中心|(Xi Jinping) speech essence research center
+中国教父＋习（近平）|Chinese Godfather Xi (Jinping)
+王晓玲 |Wang Xiaoling
+胡占凡＋被查 |Hu Zhanfan+be investigated
+胡占凡＋内幕交易|Hu Zhanfan+insider trading
+（周）元根 |(Zhou) Yuangen
+边境＋士兵 |border+soldier
+诱惑 |seduce
+杨佳＋我还有话要说|Yang Jia+When Night Falls
+应亮＋我还有话要说|Ying Liang+When Night Falls
+丁家喜＋财产公示|Ding Jiaxi+financial disclosure
+丁家喜＋官员财产|Ding Jiaxi+officials' assets
+茂名＋PX|Maoming+PX
+茂名＋P（X）|Maoming+P[X]
+茂名＋上街＋散步|Maoming+take to the streets+take a walk
+maoming＋PX|maoming+PX
+PX|PX
+中南海＋（权）斗|Zhongnanhai+(power) struggle
+桂林西门桥＋宝马车司机|Guilin Ximenqiao+BMW driver
+西门桥＋宝马车司机＋新疆疑犯|Ximenqiao+BMW driver+Xinjiang suspect
+沈培平被调查＋贺国强|Shen Peiping under investigation+He Guoqiang
+ICIJ|ICIJ [International Consortium of Investigative Journalists]
+习＋最近严厉讲话|Xi+most recent stern speech
+尚福林＋137亿|Shang Fulin+13.7 billion
+解放军301+炸弹|PLA 301+bomb
+陈光标＋第一桶金|Chen Guangbiao+first bucket of gold
+陈光标＋忽悠＋欺骗|Chen Guangbiao+trick+cheat
+小马奔腾＋大亨案|Galloping Horse [Film]+tycoon case
+小马奔腾＋董事长|Galloping Horse [Film]+chairman of the board
+香港商报＋中纪委|Hong Kong Commercial Daily+Central Discipline Commission
+李东生＋zhou|Li Dongzheng+zhou
+李东生＋ZK|Li Dongsheng+ZK
+毛宏芳60分下台|Mao Hongfang 60 points step down
+高层恩怨与习仲勋|Grudges, Gratitude, and Xi Zhongxun
+习桥桥 |Xi Qiaoqiao
+南华（早报）＋马云|South China (Morning Post)+Jack Ma
+南华＋编辑部声明|South China+editors' statement
+GSK|GSK
+新疆+27人死亡|Xinjiang+27 people dead
+中国动态调查委员会主任|Director of the Commission of Inquiry on Domestic Dynamics
+Li战书|Li Zhanshu
+栗zhanshu|Li Zhanshu
+彭+iphone|Peng+iPhone
+第一夫人+iphone|first lady+iPhone
+国母+iphone|first lady+iPhone
+习夫人+iphone|Mrs. Xi+iPhone
+当前意识形态领域情况|current situation of the ideological sphere
+Jun+4th|Jun+4th
+TAM|TAM
+财产公示+九君子|financial disclosure+nine gentlemen
+成都PX项目|Chengdu PX project
+5月4日+九眼桥+散步|May 4th+Jiuyan Bridge+take a walk
+彭州+PX|Pengzhou+PX
+个人媒体+无法无天|individual media+defy both heaven and law
+马三家女子劳教所|Masanjia Women’s Labor Re-education Camp
+十年前非典+十年后禽流感|SARS ten years ago+bird flu ten years later
+习+facebook|Xi+facebook
+昆明+PX|Kunming+PX
+安宁+PX|Anning+PX
+抵制PX|boycott PX
+黄WW|Huang WW
+connected China|connected China
+X产党|Commun-x Party
+XJB|XJB
+NF|NF
+南方周末+新年献词|Southern Weekly + New Year’s greeting
+李克强+PS|Li Keqiang + PS
+新华社+PS|Xinhua + PS
+习JP|XiJP
+2.7b|2.7b
+宁波+公安局+王伟标|Ningbo + Public Security Bureau + Wang Weibiao
+我们要生存 我们要吃饭|We want to survive, we want to get by
+纽约SB|New York SB
+NY|NY
+New York Times|New York Times
+X近平|XJinping
+HeGuoqiang|HeGuoqiang
+P民报|P People News
+经济观察报+查封|Economic Observer + seize
+QD|QD
+Q东|QDong
+启D|QiD
+郭JL|GuoJL
+HU主|HUzhu
+XI|XI
+XJP|XJP
+Bloomberg|Bloomberg
+LWY|LWY
+changweibo.com|changweibo.com
+章子怡+接受调查|Zhang Ziyi + accept investigation
+章子怡+限制出境|Zhang Ziyi + restricted from leaving the country
+韩耀 |Han Yao
+马驰+法拉利+新加坡|Ma Chi + Ferrari + Singapore
+z永K|zYongK
+陈光C|Chen Guang C
+陈G诚|Chen G Cheng
+C光C|C Guang C
+CG诚|CG Cheng
+朝阳医院+骆家辉|Chaoyang Hospital + Gary Locke
+朝阳医院+华盛顿邮报|Chaoyang Hospital + Washington Post
+UA898|UA898
+CNN|CNN
+BBC|BBC
+GC|GC
+GKL|GKL
+权斗 |power struggle
+公告 |announcement
+特警 |special police
+袭来 |Surprise-Attack Comes
+BO|BO
+王立JUN|Wang Li JUN
+北京日报+总书记|Beijing Daily + secretary-general
+HU锦套|HU Embroidered-Set
+Neil Wood|Neil Wood
+Nick Haywood|Nick Haywood
+ZYK|ZYK
+周YK|Zhou YK
+天线宝宝+康师傅|Teletubby + Kang Shifu
+天线宝宝+方便面|Teletubby + instant noodles
+BXL|BXL
+WLJ|WLJ
+保护性拆除+临时性强奸|protective demolition + temporary rape
+叙利亚+紧急声明|Syria + emergency declaration
+互联网信息办公室|Internet Information Office
+煽动颠覆国家政权|incite subversion of state power
+WK|WK
+9.21|9.21
+请用文明来说服我|please use civilzation to persuade me
+我在美国当市长助理|I Was a Mayoral Aide in the U.S. [book title]
+ 蒋彦永|Jiang Yanyong
+Jasmine|Jasmine
+江 亲信（词组或短语）|Jiang trusted followers
+吉林战士（短语或组合）|Jilin combatant (stand-along phrase or phrase containing these words)
+CCP|CCP
+JMZ|JMZ
+BLOOD|BLOOD
+CLY|CLY
+胡掏X|Hu TaoX
+胡X掏|Hu Xtao
+胡套X|Hu TaoX
+胡X套|Hu Xtao
+胡X涛|Hu Xtao
+胡紧X|Hu JinX
+胡X紧|Hu Xjin
+胡锦X|Hu JinX
+温家X|Wen JiaX
+下台 |step down [from office]
+CCAV|CCAV
+GFW|GFW
+共残党 |Commu-crush Party
+ZHU所生！|what ZHU gave birth to!
+社HUI主义|soCIALism (shèHUIzhǔyì)
+中国政F|Chinese governM (Zhōngguó zhèngF)
+太垃JI|tailaJI
+SB|SB
+Tibet free|Tibet free
+free Tibet|free Tibet
+网易SB|NetEase SB
+你妈B|your Mom's B
+驴B|donkey B
+严禁词 |strictly forbidden words
+GCD|GCD
+BBC中文网|BBC Chinese Net
