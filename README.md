@@ -1,6 +1,6 @@
 # ChinaEye
 
-⚠️ Due to the shutdown of our China proxies, this software is no longer functioning. If you have a solution, please contact! ⚠️
+⚠️ Due to the shutdown of our China proxies, this software is no longer functioning. If you have an alternate solution, please contact us! ⚠️
 
 ![chinaeye_s@2x](https://user-images.githubusercontent.com/737638/131649359-5dbb0c22-def6-41c0-8bb2-82cb4ed4d691.jpg)
 
@@ -19,7 +19,7 @@ ChinaEye is a free/open-source browser extension that allows users to experience
 
 <br>
 
-Special thanks to Sally Chen and 'the Great Firewall of China' website
+Special thanks to Sally Chen
 
 &nbsp;
 
