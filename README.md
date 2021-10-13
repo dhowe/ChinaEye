@@ -1,5 +1,7 @@
 # ChinaEye
 
+⚠️ Due to the shutdown of our China proxies, this software is no longer functioning. If you have a solution, please contact! ⚠️
+
 ![chinaeye_s@2x](https://user-images.githubusercontent.com/737638/131649359-5dbb0c22-def6-41c0-8bb2-82cb4ed4d691.jpg)
 
 ChinaEye is a free/open-source browser extension that allows users to experience the web as if they were living in China. ChinaEye hides all content on blocked sites by doing real-time lookups on a number of proxy sites in China (Beijing, Shenzen, Mongolia, HeilongJiang, Yunnan, etc). If the page is blocked in one or more of these locations, the page appears with content obscured. Similarly, when searching, if a particular search term is censored, then the search results will be obscured as well.
