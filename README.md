@@ -1,6 +1,6 @@
 # ChinaEye
 
-⚠️ Due to shutdown of our China proxies, this software is now inactive. If you have a solution, please let us know! ⚠️
+⚠️ Due to shutdown of our China proxies, this software is now inactive. If you have a solution, let us know! ⚠️
 
 ![chinaeye_s@2x](https://user-images.githubusercontent.com/737638/131649359-5dbb0c22-def6-41c0-8bb2-82cb4ed4d691.jpg)
 
