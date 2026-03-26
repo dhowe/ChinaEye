@@ -19,7 +19,7 @@ ChinaEye is a free/open-source browser extension that allows users to experience
 
 <br>
 
-Special thanks to Qianxun Chen
+Special thanks to [Qianxun Chen](https://chenqianxun.com/)
 
 &nbsp;
 
